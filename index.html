@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Mastery Dashboard — by Pamas</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Bebas+Neue&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #05070f;
+  --bg2: #080b17;
+  --panel: #0c0f1e;
+  --panel2: #101425;
+  --border: #1a2040;
+  --border2: #222845;
+  --purple: #9333ea;
+  --purple2: #7c3aed;
+  --blue: #3b82f6;
+  --cyan: #06b6d4;
+  --pink: #ec4899;
+  --green: #10b981;
+  --yellow: #f59e0b;
+  --red: #ef4444;
+  --orange: #f97316;
+  --text: #e2e8f0;
+  --muted: #4b5580;
+  --muted2: #6b7db3;
+  --glow-p: 0 0 24px rgba(147,51,234,0.4);
+  --glow-b: 0 0 24px rgba(59,130,246,0.4);
+  --glow-c: 0 0 20px rgba(6,182,212,0.35);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden;
+}
+
+/* NEURAL CANVAS BG */
+#neural-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.35;pointer-events:none;}
+
+.wrap{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding:20px 24px;}
+
+/* ── HEADER ── */
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 0 26px;border-bottom:1px solid var(--border);margin-bottom:28px;
+  animation:slideDown .6s ease both;flex-wrap:wrap;gap:14px;
+}
+.logo{display:flex;align-items:center;gap:14px;}
+.logo-icon{
+  width:52px;height:52px;border-radius:14px;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;box-shadow:var(--glow-p);
+  animation:pulse-glow 3s infinite;
+}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(147,51,234,.4);}50%{box-shadow:0 0 40px rgba(147,51,234,.7);}}
+.logo-text h1{font-family:'Bebas Neue';font-size:2.3rem;letter-spacing:3px;
+  background:linear-gradient(90deg,var(--purple),var(--blue),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-text span{font-size:.68rem;color:var(--muted2);letter-spacing:3px;text-transform:uppercase;}
+
+.header-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.hstat{
+  text-align:center;padding:8px 16px;
+  border:1px solid var(--border);border-radius:10px;background:var(--panel);
+}
+.hstat .num{font-family:'JetBrains Mono';font-size:1.25rem;font-weight:700;
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hstat .lbl{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+
+/* AUTHOR BADGE */
+.author-badge{
+  display:flex;align-items:center;gap:9px;padding:7px 14px 7px 9px;
+  background:linear-gradient(135deg,rgba(147,51,234,.15),rgba(59,130,246,.1));
+  border:1px solid rgba(147,51,234,.4);border-radius:999px;
+  user-select:none;pointer-events:none;position:relative;overflow:hidden;
+}
+.author-badge::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(147,51,234,.1),transparent);
+  animation:shim 3s infinite;
+}
+@keyframes shim{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+.ab-av{width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;font-weight:800;color:#fff;flex-shrink:0;z-index:1;position:relative;}
+.ab-info{z-index:1;position:relative;}
+.ab-name{font-family:'JetBrains Mono';font-size:.78rem;font-weight:700;color:#c084fc;display:block;}
+.ab-role{font-size:.58rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;}
+
+/* ── SEARCH ── */
+.search-wrap{position:relative;margin-bottom:22px;animation:slideDown .6s .1s ease both;}
+.search-wrap input{
+  width:100%;padding:13px 20px 13px 50px;
+  background:var(--panel);border:1px solid var(--border);border-radius:12px;
+  color:var(--text);font-family:'JetBrains Mono';font-size:.88rem;outline:none;transition:all .3s;
+}
+.search-wrap input:focus{border-color:var(--purple);box-shadow:var(--glow-p);}
+.search-wrap input::placeholder{color:var(--muted);}
+.search-wrap .si{position:absolute;left:17px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1rem;}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;animation:slideDown .6s .15s ease both;}
+.tab{
+  padding:8px 18px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--border);background:var(--panel);
+  font-size:.8rem;font-weight:600;transition:all .2s;display:flex;align-items:center;gap:7px;
+}
+.tab:hover{border-color:var(--purple);color:#c084fc;}
+.tab.active{background:linear-gradient(135deg,var(--purple),var(--purple2));border-color:var(--purple);color:#fff;box-shadow:var(--glow-p);}
+.tab .dot{width:7px;height:7px;border-radius:50%;}
+
+/* ── LAYOUT ── */
+.layout{display:grid;grid-template-columns:270px 1fr;gap:22px;animation:fadeIn .6s .2s ease both;}
+
+/* SIDEBAR */
+.sidebar{display:flex;flex-direction:column;gap:14px;}
+.s-box{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.s-box h3{
+  padding:13px 15px;font-size:.65rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted2);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;
+}
+.s-box h3 .hl{color:var(--purple);}
+.cat-list{padding:7px;}
+.cat-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 11px;border-radius:8px;cursor:pointer;transition:all .2s;margin-bottom:2px;font-size:.83rem;
+}
+.cat-item:hover{background:var(--panel2);}
+.cat-item.active{background:rgba(147,51,234,.12);border:1px solid rgba(147,51,234,.3);}
+.cat-item .cl{display:flex;align-items:center;gap:9px;}
+.cat-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.85rem;}
+.cbadge{font-family:'JetBrains Mono';font-size:.68rem;padding:2px 8px;border-radius:999px;
+  background:rgba(147,51,234,.15);color:#c084fc;}
+
+/* PROGRESS */
+.prog-wrap{padding:14px;}
+.pi{margin-bottom:13px;}
+.ph{display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:5px;}
+.ph .pn{color:var(--text);}
+.ph .pp{color:#c084fc;font-family:'JetBrains Mono';}
+.pbar{height:4px;background:var(--border);border-radius:999px;overflow:hidden;}
+.pfill{height:100%;border-radius:999px;transition:width 1.2s ease;}
+
+/* ── CONTENT ── */
+.content{display:flex;flex-direction:column;gap:18px;}
+
+/* CARDS */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;}
+.card{
+  background:var(--panel);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;cursor:pointer;transition:all .25s;position:relative;
+}
+.card:hover{border-color:var(--purple);transform:translateY(-2px);box-shadow:0 8px 32px rgba(147,51,234,.15);}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--purple),var(--blue),var(--cyan));
+  opacity:0;transition:opacity .25s;
+}
+.card:hover::before{opacity:1;}
+.card-head{padding:13px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.card-title{display:flex;align-items:center;gap:9px;font-weight:700;font-size:.88rem;}
+.c-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+.diff{font-size:.62rem;padding:3px 9px;border-radius:999px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;}
+.d-beginner{background:rgba(16,185,129,.15);color:var(--green);}
+.d-intermediate{background:rgba(245,158,11,.15);color:var(--yellow);}
+.d-advanced{background:rgba(239,68,68,.15);color:var(--red);}
+.d-pro{background:rgba(147,51,234,.15);color:#c084fc;}
+.d-researcher{background:rgba(236,72,153,.15);color:var(--pink);}
+
+.card-body{padding:13px 15px;}
+.card-body p{font-size:.8rem;color:var(--muted2);margin-bottom:10px;line-height:1.65;}
+.code-snip{
+  background:#030508;border-radius:8px;padding:9px 13px;
+  font-family:'JetBrains Mono';font-size:.75rem;border:1px solid #111830;
+  position:relative;overflow:hidden;color:#a5b4fc;line-height:1.6;
+}
+.code-snip .cp{
+  position:absolute;right:8px;top:6px;background:var(--border);border:none;
+  border-radius:4px;color:var(--muted2);cursor:pointer;padding:2px 7px;font-size:.65rem;transition:all .2s;
+}
+.code-snip .cp:hover{background:var(--purple);color:#fff;}
+.ctags{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px;}
+.ctag{font-size:.62rem;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border);}
+.learned-mark{position:absolute;top:11px;right:11px;width:18px;height:18px;border-radius:50%;
+  background:var(--green);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#fff;}
+
+/* SECTION HEAD */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.sec-head h2{
+  font-family:'Bebas Neue';font-size:1.5rem;letter-spacing:1.5px;
+  display:flex;align-items:center;gap:10px;
+}
+.sec-head h2 .hl{
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.cnt-badge{font-size:.68rem;padding:3px 11px;border-radius:999px;
+  background:rgba(147,51,234,.12);border:1px solid rgba(147,51,234,.3);color:#c084fc;font-family:'JetBrains Mono';}
+
+/* ── MODAL ── */
+.modal-ov{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.88);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;padding:20px;
+}
+.modal-ov.open{display:flex;}
+.modal{
+  background:var(--panel);border:1px solid var(--border2);border-radius:18px;
+  width:100%;max-width:720px;max-height:88vh;overflow-y:auto;
+  animation:scaleIn .3s ease;
+}
+.modal-top{
+  padding:20px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;justify-content:space-between;
+  position:sticky;top:0;background:var(--panel);z-index:1;
+}
+.modal-top h2{font-size:1.1rem;font-weight:700;display:flex;align-items:center;gap:10px;flex:1;}
+.m-close{
+  width:32px;height:32px;border-radius:8px;background:var(--panel2);
+  border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:1rem;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;
+}
+.m-close:hover{background:var(--red);border-color:var(--red);}
+.modal-body{padding:22px 24px;}
+.modal-body p{color:var(--muted2);line-height:1.75;margin-bottom:14px;font-size:.88rem;}
+.modal-body h4{color:#c084fc;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;margin:18px 0 10px;}
+.modal-body .big-desc{color:var(--text);font-size:.92rem;line-height:1.8;margin-bottom:16px;}
+.m-code{
+  background:#030508;border-radius:10px;padding:15px 18px;
+  font-family:'JetBrains Mono';font-size:.79rem;border:1px solid #111830;
+  margin-bottom:12px;line-height:1.9;position:relative;
+}
+.m-code .ln{display:block;color:#a5b4fc;}
+.m-code .cm{display:block;color:var(--muted);}
+.m-code .cm::before{content:'# ';}
+.m-code .out{display:block;color:var(--yellow);}
+.m-code .out::before{content:'→ ';}
+.tip-box{
+  background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);
+  border-radius:10px;padding:13px 16px;margin-top:12px;font-size:.82rem;color:var(--yellow);
+  display:flex;gap:10px;align-items:flex-start;line-height:1.6;
+}
+.analogy-box{
+  background:rgba(6,182,212,.07);border:1px solid rgba(6,182,212,.2);
+  border-radius:10px;padding:13px 16px;font-size:.82rem;color:var(--cyan);
+  display:flex;gap:10px;align-items:flex-start;line-height:1.6;margin-bottom:10px;
+}
+.m-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+.m-btn{
+  padding:10px 20px;border-radius:8px;cursor:pointer;font-size:.82rem;font-weight:700;
+  border:1px solid;transition:all .2s;
+}
+.m-btn-green{background:rgba(16,185,129,.1);border-color:var(--green);color:var(--green);}
+.m-btn-green:hover{background:rgba(16,185,129,.25);}
+.m-btn-purple{background:rgba(147,51,234,.1);border-color:var(--purple);color:#c084fc;}
+.m-btn-purple:hover{background:rgba(147,51,234,.25);}
+
+/* ── ROADMAP ── */
+.roadmap{padding:8px 0;}
+.rm-item{display:flex;gap:14px;position:relative;}
+.rm-item:not(:last-child) .rm-line{position:absolute;left:17px;top:38px;width:2px;bottom:-10px;background:var(--border);}
+.rm-num{
+  width:36px;height:36px;border-radius:9px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono';font-size:.8rem;font-weight:700;
+  position:relative;z-index:1;border:2px solid var(--border);background:var(--panel2);
+}
+.rm-num.done{background:rgba(16,185,129,.15);border-color:var(--green);color:var(--green);}
+.rm-num.active{background:rgba(147,51,234,.2);border-color:var(--purple);color:#c084fc;animation:pulse-glow 2s infinite;}
+.rm-num.locked{color:var(--muted);}
+.rm-content{padding:6px 0 22px;flex:1;}
+.rm-content h4{font-size:.9rem;font-weight:700;margin-bottom:4px;}
+.rm-content p{font-size:.77rem;color:var(--muted2);line-height:1.55;}
+.rm-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
+.rm-tag{font-size:.62rem;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);}
+
+/* ── CHEATSHEET ── */
+.cs-table{width:100%;border-collapse:collapse;}
+.cs-table th{text-align:left;padding:10px 13px;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);border-bottom:2px solid var(--border);}
+.cs-table td{padding:10px 13px;font-size:.8rem;border-bottom:1px solid rgba(26,32,64,.5);}
+.cs-table tr:hover td{background:rgba(147,51,234,.04);}
+.cs-table .term{font-family:'JetBrains Mono';color:#c084fc;font-weight:600;}
+.cs-table .def{color:var(--muted2);}
+
+/* ── GLOSSARY ── */
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;}
+.gloss-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;
+  padding:13px 15px;transition:all .2s;cursor:default;
+}
+.gloss-card:hover{border-color:var(--purple);}
+.gloss-card .gt{font-family:'JetBrains Mono';font-size:.82rem;font-weight:700;color:#c084fc;margin-bottom:5px;}
+.gloss-card .gd{font-size:.77rem;color:var(--muted2);line-height:1.6;}
+
+/* ── QUIZ ── */
+.quiz-wrap{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:22px;}
+.q-text{font-size:.98rem;font-weight:600;margin-bottom:18px;line-height:1.55;color:var(--text);}
+.q-opts{display:flex;flex-direction:column;gap:9px;}
+.q-opt{
+  padding:11px 15px;border-radius:10px;border:1px solid var(--border);
+  background:var(--panel2);cursor:pointer;font-size:.83rem;transition:all .2s;
+  display:flex;align-items:center;gap:11px;
+}
+.q-opt:hover{border-color:var(--purple);background:rgba(147,51,234,.06);}
+.q-opt.correct{border-color:var(--green);background:rgba(16,185,129,.1);color:var(--green);}
+.q-opt.wrong{border-color:var(--red);background:rgba(239,68,68,.1);color:var(--red);}
+.q-letter{width:24px;height:24px;border-radius:6px;border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-size:.72rem;font-weight:700;flex-shrink:0;}
+.q-foot{display:flex;justify-content:space-between;align-items:center;margin-top:18px;flex-wrap:wrap;gap:10px;}
+.q-exp{font-size:.78rem;color:var(--muted2);max-width:65%;line-height:1.5;}
+.q-next{
+  padding:9px 22px;background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.83rem;
+  transition:all .2s;display:none;
+}
+.q-next:hover{transform:scale(1.03);box-shadow:var(--glow-p);}
+.q-score-bar{
+  height:5px;background:var(--border);border-radius:999px;overflow:hidden;margin-bottom:20px;
+}
+.q-score-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--purple),var(--cyan));transition:width .6s ease;}
+
+/* ── TERMINAL ── */
+.terminal{background:#020408;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.term-bar{background:#060a14;padding:10px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.dots{display:flex;gap:6px;}
+.dot2{width:11px;height:11px;border-radius:50%;}
+.term-body{padding:14px;font-family:'JetBrains Mono';font-size:.79rem;min-height:180px;max-height:320px;overflow-y:auto;}
+.tl{margin-bottom:3px;line-height:1.6;}
+.tl .pr{color:var(--green);}
+.tl .ct{color:var(--cyan);}
+.tl .to{color:var(--muted2);}
+.tl .te{color:var(--red);}
+.tl .th{color:var(--yellow);}
+.term-in-row{display:flex;align-items:center;gap:8px;padding:4px 14px 14px;}
+.term-in-row .pr{color:var(--green);font-family:'JetBrains Mono';font-size:.79rem;white-space:nowrap;}
+.term-in{flex:1;background:transparent;border:none;outline:none;color:var(--cyan);font-family:'JetBrains Mono';font-size:.79rem;}
+
+/* FOOTER */
+.site-footer{
+  margin-top:48px;padding:22px 0 14px;
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.foot-author{
+  display:flex;align-items:center;gap:12px;padding:10px 18px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(147,51,234,.12),rgba(59,130,246,.07));
+  border:1px solid rgba(147,51,234,.3);user-select:none;pointer-events:none;
+}
+.fa-av{width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#fff;
+  box-shadow:0 0 14px rgba(147,51,234,.4);}
+.fa-name{font-family:'JetBrains Mono';font-weight:700;font-size:.9rem;color:#c084fc;display:block;}
+.fa-sub{font-size:.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.foot-copy{font-size:.7rem;color:var(--muted);font-family:'JetBrains Mono';}
+.foot-copy span{color:#c084fc;}
+
+/* NOTIF */
+.notif{
+  position:fixed;bottom:22px;right:22px;z-index:999;
+  background:var(--panel);border:1px solid var(--green);border-radius:10px;
+  padding:11px 18px;font-size:.8rem;color:var(--green);display:flex;align-items:center;gap:8px;
+  transform:translateY(70px);opacity:0;transition:all .3s;pointer-events:none;
+}
+.notif.show{transform:translateY(0);opacity:1;}
+
+/* ANIMATIONS */
+@keyframes slideDown{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--purple);}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .header-right{gap:8px;}
+}
+</style>
+</head>
+<body>
+
+<!-- Neural network animated canvas -->
+<canvas id="neural-canvas"></canvas>
+
+<div class="wrap">
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🧠</div>
+    <div class="logo-text">
+      <h1>AI Mastery</h1>
+      <span>From Zero to AI Engineer</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="hstat"><div class="num" id="total-topics">0</div><div class="lbl">Topics</div></div>
+    <div class="hstat"><div class="num" id="total-cats">8</div><div class="lbl">Categories</div></div>
+    <div class="hstat"><div class="num" id="learned-count">0</div><div class="lbl">Learned</div></div>
+    <div class="author-badge" id="author-badge" data-author="Pamas">
+      <div class="ab-av">P</div>
+      <div class="ab-info">
+        <span class="ab-name" id="author-name">Pamas</span>
+        <span class="ab-role">Author</span>
+      </div>
+      <span style="font-size:.65rem;color:var(--muted);margin-left:3px;position:relative;z-index:1;">🔒</span>
+    </div>
+  </div>
+</header>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <span class="si">🔍</span>
+  <input type="text" id="search" placeholder="Search AI concepts, algorithms, tools... (e.g. neural network, GPT, gradient descent)" oninput="filterContent()"/>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="setLevel('all')">⚡ All Levels</div>
+  <div class="tab" onclick="setLevel('beginner')"><span class="dot" style="background:var(--green)"></span>Beginner</div>
+  <div class="tab" onclick="setLevel('intermediate')"><span class="dot" style="background:var(--yellow)"></span>Intermediate</div>
+  <div class="tab" onclick="setLevel('advanced')"><span class="dot" style="background:var(--red)"></span>Advanced</div>
+  <div class="tab" onclick="setLevel('pro')"><span class="dot" style="background:#c084fc"></span>Pro</div>
+  <div class="tab" onclick="setLevel('researcher')"><span class="dot" style="background:var(--pink)"></span>Researcher</div>
+  <div class="tab" onclick="setView('roadmap')" style="margin-left:auto">🗺 Roadmap</div>
+  <div class="tab" onclick="setView('cheatsheet')">📋 Cheatsheet</div>
+  <div class="tab" onclick="setView('glossary')">📖 Glossary</div>
+  <div class="tab" onclick="setView('quiz')">🧠 Quiz</div>
+  <div class="tab" onclick="setView('terminal')">💻 Playground</div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+  <div class="sidebar">
+    <div class="s-box">
+      <h3><span class="hl">📂</span> Categories</h3>
+      <div class="cat-list" id="cat-list"></div>
+    </div>
+    <div class="s-box">
+      <h3><span class="hl">📈</span> Progress</h3>
+      <div class="prog-wrap" id="prog-wrap"></div>
+    </div>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="foot-author" id="footer-author" data-author="Pamas">
+    <div class="fa-av">P</div>
+    <div>
+      <span class="fa-name" id="footer-author-name">Pamas</span>
+      <span class="fa-sub">Pamas · AI Mastery Dashboard</span>
+    </div>
+    <span style="font-size:.8rem;margin-left:6px;">🔒</span>
+  </div>
+  <div class="foot-copy">© <span id="foot-year"></span> AI Mastery · Built by <span>Pamas</span> · All rights reserved</div>
+</footer>
+
+</div><!-- /wrap -->
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal" onclick="closeModalOv(event)">
+  <div class="modal">
+    <div class="modal-top">
+      <h2 id="modal-title"></h2>
+      <button class="m-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- NOTIF -->
+<div class="notif" id="notif">✓ Copied!</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────
+const DB = {
+  categories:[
+    {id:'fundamentals', name:'AI Fundamentals',   icon:'🤖', color:'#9333ea'},
+    {id:'ml',          name:'Machine Learning',    icon:'📊', color:'#3b82f6'},
+    {id:'dl',          name:'Deep Learning',       icon:'🧠', color:'#06b6d4'},
+    {id:'nn',          name:'Neural Networks',     icon:'🕸', color:'#f97316'},
+    {id:'nlp',         name:'NLP & LLMs',          icon:'💬', color:'#10b981'},
+    {id:'cv',          name:'Computer Vision',     icon:'👁', color:'#ec4899'},
+    {id:'tools',       name:'AI Tools & Frameworks',icon:'🛠', color:'#f59e0b'},
+    {id:'ethics',      name:'Ethics & Future AI',  icon:'⚖️', color:'#ef4444'},
+  ],
+  topics:[
+    // ─── FUNDAMENTALS ───
+    {id:'what-is-ai', cat:'fundamentals', level:'beginner', name:'What is AI?',
+     desc:'Artificial Intelligence is the science of making machines think and act like humans — or smarter.',
+     snippet:'# AI can: recognize speech, play chess, write text, drive cars',
+     tags:['ai','introduction','definition'],
+     detail:{
+       full:'Artificial Intelligence (AI) is a branch of computer science focused on creating systems that can perform tasks that typically require human intelligence. These tasks include reasoning, learning, problem-solving, perception, and language understanding.',
+       analogy:'Think of AI like teaching a dog tricks — but the "dog" is a computer. You show it thousands of examples until it learns the pattern on its own.',
+       examples:[
+         {code:'# Three types of AI by capability', type:'cm'},
+         {code:'# 1. Narrow AI (ANI) — Does ONE thing really well', type:'cm'},
+         {code:'#    Examples: Siri, Google Translate, Netflix recommendations', type:'cm'},
+         {code:'# 2. General AI (AGI) — Thinks like a human (not yet achieved)', type:'cm'},
+         {code:'# 3. Super AI (ASI) — Smarter than all humans combined (hypothetical)', type:'cm'},
+         {code:'', type:'ln'},
+         {code:'real_world_ai = ["self-driving cars", "face unlock", "ChatGPT", "spam filters"]', type:'ln'},
+       ],
+       tip:'Start by understanding that all AI today is Narrow AI — even ChatGPT is "just" a very advanced pattern matcher.'
+     }
+    },
+    {id:'ml-vs-ai', cat:'fundamentals', level:'beginner', name:'AI vs ML vs DL',
+     desc:'AI is the big idea. Machine Learning is how we achieve it. Deep Learning is a powerful subset of ML using neural networks.',
+     snippet:'AI ⊃ Machine Learning ⊃ Deep Learning',
+     tags:['ai','ml','deep learning','difference'],
+     detail:{
+       full:'AI is the broad concept of intelligent machines. Machine Learning is a subset where machines learn from data without being explicitly programmed. Deep Learning is a subset of ML using multi-layered neural networks.',
+       analogy:'AI is like "cooking food." ML is a specific technique like "baking." Deep Learning is a specific style of baking like "making croissants" — more complex but more powerful.',
+       examples:[
+         {code:'AI        → Making computers smart', type:'cm'},
+         {code:'ML        → Learning from data automatically', type:'cm'},
+         {code:'Deep Learning → ML using layered neural networks', type:'cm'},
+         {code:'', type:'ln'},
+         {code:'# Example: Image recognition', type:'cm'},
+         {code:'# Old AI:        if pixel_color == "skin_tone": face = True', type:'cm'},
+         {code:'# ML:            model.fit(10000_face_images)', type:'cm'},
+         {code:'# Deep Learning: CNN with 50+ layers learns features itself', type:'cm'},
+       ],
+       tip:'When someone says "AI", they usually mean ML. When someone says "ML", they often use Deep Learning. The terms overlap a lot in practice.'
+     }
+    },
+    {id:'data', cat:'fundamentals', level:'beginner', name:'Data — The Fuel of AI',
+     desc:'AI runs on data. Without high-quality, large datasets, even the best algorithms fail. Data is collected, cleaned, and prepared before training.',
+     snippet:'model.fit(X_train, y_train)  # X=data, y=labels',
+     tags:['data','dataset','training'],
+     detail:{
+       full:'Data is the foundation of all AI systems. AI models learn by finding patterns in data. The quality, quantity, and diversity of data directly determines how well an AI performs.',
+       analogy:'Teaching AI with data is like teaching a child by showing them flashcards. The more cards you show (data), and the more accurate the cards are (quality), the better they learn.',
+       examples:[
+         {code:'import pandas as pd', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Load dataset', type:'cm'},
+         {code:'df = pd.read_csv("data.csv")', type:'ln'},
+         {code:'print(df.shape)   # (rows, columns)', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Check for missing values', type:'cm'},
+         {code:'df.isnull().sum()', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Split into features (X) and label (y)', type:'cm'},
+         {code:'X = df.drop("target", axis=1)', type:'ln'},
+         {code:'y = df["target"]', type:'ln'},
+       ],
+       tip:'Real-world datasets are messy. Data cleaning (handling missing values, outliers, inconsistencies) takes 60-80% of a data scientist\'s time.'
+     }
+    },
+    {id:'training', cat:'fundamentals', level:'beginner', name:'Training vs Inference',
+     desc:'Training is when the AI learns from data. Inference is when it uses what it learned to make predictions on new data.',
+     snippet:'model.fit(X_train)  →  model.predict(X_new)',
+     tags:['training','inference','prediction'],
+     detail:{
+       full:'Training is the process of feeding data into an algorithm to learn patterns. Inference is using the trained model to make predictions on unseen data.',
+       analogy:'Training = studying for an exam. Inference = taking the exam. You only study once (train), but take many exams (infer).',
+       examples:[
+         {code:'from sklearn.linear_model import LogisticRegression', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# TRAINING — model learns from data', type:'cm'},
+         {code:'model = LogisticRegression()', type:'ln'},
+         {code:'model.fit(X_train, y_train)', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# INFERENCE — model predicts on new data', type:'cm'},
+         {code:'predictions = model.predict(X_test)', type:'ln'},
+         {code:'print(f"Accuracy: {accuracy_score(y_test, predictions):.2%}")', type:'ln'},
+       ],
+       tip:'Training is expensive (hours/days on GPUs). Inference is cheap (milliseconds). That\'s why services like ChatGPT train once but serve millions of users.'
+     }
+    },
+
+    // ─── MACHINE LEARNING ───
+    {id:'supervised', cat:'ml', level:'beginner', name:'Supervised Learning',
+     desc:'The model learns from labeled examples — input/output pairs. Like learning with an answer key.',
+     snippet:'model.fit(X, y)  # y = labels/answers',
+     tags:['supervised','classification','regression'],
+     detail:{
+       full:'In supervised learning, the algorithm is trained on a labeled dataset where each input has a known correct output. The model learns to map inputs to outputs and can then predict outputs for new inputs.',
+       analogy:'It\'s like a teacher grading homework. You get the questions (inputs) AND the answers (labels). You learn the pattern to get future answers right.',
+       examples:[
+         {code:'from sklearn.tree import DecisionTreeClassifier', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Spam detection example', type:'cm'},
+         {code:'# X = email features, y = spam(1) or not(0)', type:'cm'},
+         {code:'model = DecisionTreeClassifier()', type:'ln'},
+         {code:'model.fit(X_train, y_train)', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'new_email = [[0.8, 1, 0, 0.5, 1]]  # features', type:'ln'},
+         {code:'print(model.predict(new_email))  # [1] = SPAM', type:'ln'},
+       ],
+       tip:'Supervised learning = most common type in industry. Classification (categories) and Regression (numbers) are the two main flavors.'
+     }
+    },
+    {id:'unsupervised', cat:'ml', level:'intermediate', name:'Unsupervised Learning',
+     desc:'The model finds patterns in data without labels. It discovers hidden structure on its own.',
+     snippet:'kmeans.fit(X)  # no y labels needed!',
+     tags:['unsupervised','clustering','k-means'],
+     detail:{
+       full:'Unsupervised learning works with unlabeled data. The algorithm must find structure, patterns, or groupings on its own without any guidance.',
+       analogy:'Imagine sorting a pile of foreign coins you\'ve never seen before. You group them by size, color, and markings without knowing their value. The algorithm does the same with data.',
+       examples:[
+         {code:'from sklearn.cluster import KMeans', type:'ln'},
+         {code:'import matplotlib.pyplot as plt', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Customer segmentation — no labels needed', type:'cm'},
+         {code:'kmeans = KMeans(n_clusters=3, random_state=42)', type:'ln'},
+         {code:'kmeans.fit(customer_data)', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'labels = kmeans.labels_', type:'ln'},
+         {code:'# Group 0: budget buyers, 1: premium, 2: casual', type:'cm'},
+       ],
+       tip:'Use unsupervised learning when you have lots of data but no labels. Great for customer segmentation, anomaly detection, and data exploration.'
+     }
+    },
+    {id:'reinforce', cat:'ml', level:'advanced', name:'Reinforcement Learning',
+     desc:'The agent learns by trial and error, receiving rewards for good actions and penalties for bad ones — like training a dog with treats.',
+     snippet:'agent.act() → reward → agent.learn()',
+     tags:['reinforcement','reward','agent','policy'],
+     detail:{
+       full:'Reinforcement Learning (RL) involves an agent that interacts with an environment, takes actions, and receives rewards or punishments. The goal is to maximize cumulative reward over time.',
+       analogy:'Like training a puppy. Sit → treat. Bite the couch → no treat. Over thousands of repetitions, the puppy (agent) learns the best behaviors (policy).',
+       examples:[
+         {code:'import gym', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# CartPole — balance a pole on a moving cart', type:'cm'},
+         {code:'env = gym.make("CartPole-v1")', type:'ln'},
+         {code:'state = env.reset()', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'for step in range(1000):', type:'ln'},
+         {code:'    action = env.action_space.sample()  # random policy', type:'ln'},
+         {code:'    state, reward, done, info = env.step(action)', type:'ln'},
+         {code:'    if done: break', type:'ln'},
+       ],
+       tip:'RL powers AlphaGo, ChatGPT\'s RLHF fine-tuning, robotics, and game-playing AIs. Key concepts: Q-learning, PPO, policy gradient.'
+     }
+    },
+    {id:'overfitting', cat:'ml', level:'intermediate', name:'Overfitting & Underfitting',
+     desc:'Overfitting = memorized training data but fails on new data. Underfitting = too simple to learn the pattern.',
+     snippet:'train_acc=99%, test_acc=60% → overfitting!',
+     tags:['overfitting','bias','variance','regularization'],
+     detail:{
+       full:'Overfitting happens when a model learns the training data too well, including noise, and fails to generalize. Underfitting is when the model is too simple to capture the underlying pattern.',
+       analogy:'Overfitting = student who memorizes every answer in the textbook but can\'t solve new problems. Underfitting = student who barely studies.',
+       examples:[
+         {code:'from sklearn.model_selection import cross_val_score', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Detect overfitting', type:'cm'},
+         {code:'train_score = model.score(X_train, y_train)', type:'ln'},
+         {code:'test_score  = model.score(X_test, y_test)', type:'ln'},
+         {code:'gap = train_score - test_score', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Fix overfitting:', type:'cm'},
+         {code:'# - Get more data', type:'cm'},
+         {code:'# - Add regularization (L1/L2)', type:'cm'},
+         {code:'# - Reduce model complexity', type:'cm'},
+         {code:'# - Use dropout (neural nets)', type:'cm'},
+       ],
+       tip:'The Bias-Variance Tradeoff: High bias = underfitting. High variance = overfitting. Use cross-validation to find the sweet spot.'
+     }
+    },
+    {id:'gradient-descent', cat:'ml', level:'intermediate', name:'Gradient Descent',
+     desc:'The core optimization algorithm that trains AI models by adjusting weights to minimize error — like rolling a ball downhill to find the lowest point.',
+     snippet:'w = w - learning_rate * gradient',
+     tags:['optimization','gradient','learning rate','loss'],
+     detail:{
+       full:'Gradient Descent is the algorithm that minimizes the loss function by iteratively adjusting model parameters in the direction of steepest descent.',
+       analogy:'Imagine you\'re blindfolded on a hilly landscape trying to reach the lowest valley. You feel the slope under your feet and take small steps downhill. That\'s gradient descent.',
+       examples:[
+         {code:'# Manual gradient descent (1D example)', type:'cm'},
+         {code:'w = 10.0  # initial weight', type:'ln'},
+         {code:'lr = 0.1  # learning rate', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'for epoch in range(100):', type:'ln'},
+         {code:'    loss = (w - 3) ** 2     # loss function', type:'ln'},
+         {code:'    gradient = 2 * (w - 3)  # derivative', type:'ln'},
+         {code:'    w = w - lr * gradient   # update step', type:'ln'},
+         {code:'    if epoch % 20 == 0:', type:'ln'},
+         {code:'        print(f"w={w:.3f}, loss={loss:.3f}")', type:'ln'},
+       ],
+       tip:'Learning rate is crucial: too high = overshoots, too low = too slow. Adam optimizer adapts the learning rate automatically — use it by default.'
+     }
+    },
+
+    // ─── DEEP LEARNING ───
+    {id:'perceptron', cat:'dl', level:'beginner', name:'The Perceptron',
+     desc:'The simplest neural network — a single artificial neuron that takes inputs, applies weights, and outputs a decision. The building block of all neural networks.',
+     snippet:'output = activation(sum(w*x) + bias)',
+     tags:['perceptron','neuron','weights','activation'],
+     detail:{
+       full:'A perceptron is a single artificial neuron — the atomic unit of neural networks. It takes multiple inputs, multiplies them by weights, sums them up, adds a bias, and passes through an activation function.',
+       analogy:'A perceptron is like a voting machine. Each input casts a vote (weighted). If total votes pass a threshold, it outputs YES. Otherwise NO.',
+       examples:[
+         {code:'import numpy as np', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Simple perceptron (AND gate)', type:'cm'},
+         {code:'def perceptron(x, w, b):', type:'ln'},
+         {code:'    z = np.dot(w, x) + b  # weighted sum + bias', type:'ln'},
+         {code:'    return 1 if z >= 0 else 0  # step activation', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'w = np.array([0.5, 0.5])', type:'ln'},
+         {code:'b = -0.7', type:'ln'},
+         {code:'print(perceptron([1,1], w, b))  # 1 (True AND True)', type:'ln'},
+         {code:'print(perceptron([1,0], w, b))  # 0 (True AND False)', type:'ln'},
+       ],
+       tip:'A single perceptron can only solve linearly separable problems. Stack them in layers to solve complex problems — that\'s a neural network.'
+     }
+    },
+    {id:'backprop', cat:'dl', level:'intermediate', name:'Backpropagation',
+     desc:'The algorithm that trains neural networks by calculating how much each weight contributed to the error and updating them accordingly.',
+     snippet:'loss.backward()  # PyTorch does this automatically',
+     tags:['backpropagation','gradients','chain rule','training'],
+     detail:{
+       full:'Backpropagation computes the gradient of the loss function with respect to each weight using the chain rule. These gradients tell gradient descent how to update weights.',
+       analogy:'Like a blame game: after a team loses a match, you trace back who made each mistake. The more someone contributed to the loss, the more they need to improve.',
+       examples:[
+         {code:'import torch', type:'ln'},
+         {code:'import torch.nn as nn', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'model = nn.Linear(2, 1)  # simple model', type:'ln'},
+         {code:'loss_fn = nn.MSELoss()', type:'ln'},
+         {code:'optimizer = torch.optim.Adam(model.parameters())', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Training step', type:'cm'},
+         {code:'optimizer.zero_grad()        # clear old gradients', type:'ln'},
+         {code:'output = model(X_tensor)     # forward pass', type:'ln'},
+         {code:'loss = loss_fn(output, y_tensor)', type:'ln'},
+         {code:'loss.backward()              # BACKPROP — compute gradients', type:'ln'},
+         {code:'optimizer.step()             # update weights', type:'ln'},
+       ],
+       tip:'You rarely implement backprop manually — PyTorch/TensorFlow do it automatically with autograd. But understanding it helps you debug training problems.'
+     }
+    },
+    {id:'cnn', cat:'dl', level:'intermediate', name:'Convolutional Neural Networks (CNN)',
+     desc:'Neural networks designed for images. They use filters to detect edges, shapes, and patterns — from simple to complex across layers.',
+     snippet:'Conv2D(32, (3,3)) → MaxPool → Dense',
+     tags:['cnn','convolution','image','vision'],
+     detail:{
+       full:'CNNs use convolutional layers that slide small filters across images to detect features like edges, textures, and shapes. Deeper layers combine these into complex patterns like faces or objects.',
+       analogy:'A CNN is like reading a page — first you notice individual letters (low-level features), then words, then sentences, then the full meaning. Each layer builds on the previous.',
+       examples:[
+         {code:'import tensorflow as tf', type:'ln'},
+         {code:'from tensorflow.keras import layers', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'model = tf.keras.Sequential([', type:'ln'},
+         {code:'    layers.Conv2D(32, (3,3), activation="relu", input_shape=(28,28,1)),', type:'ln'},
+         {code:'    layers.MaxPooling2D((2,2)),', type:'ln'},
+         {code:'    layers.Conv2D(64, (3,3), activation="relu"),', type:'ln'},
+         {code:'    layers.MaxPooling2D((2,2)),', type:'ln'},
+         {code:'    layers.Flatten(),', type:'ln'},
+         {code:'    layers.Dense(64, activation="relu"),', type:'ln'},
+         {code:'    layers.Dense(10, activation="softmax")', type:'ln'},
+         {code:'])', type:'ln'},
+       ],
+       tip:'CNNs are the backbone of computer vision. ResNet, VGG, EfficientNet are famous CNN architectures. Transfer learning lets you reuse them on your own images.'
+     }
+    },
+    {id:'rnn', cat:'dl', level:'advanced', name:'RNNs & LSTMs',
+     desc:'Neural networks with memory — designed for sequential data like text, time-series, and speech. LSTMs solve the vanishing gradient problem.',
+     snippet:'output, hidden = rnn(input, hidden_state)',
+     tags:['rnn','lstm','sequence','memory','time-series'],
+     detail:{
+       full:'Recurrent Neural Networks process sequential data by maintaining a hidden state (memory) that carries information from previous steps. LSTMs use gates to selectively remember or forget information.',
+       analogy:'An RNN is like reading a book — your understanding of the current sentence depends on what you\'ve read before. LSTMs are better at remembering things from much earlier in the book.',
+       examples:[
+         {code:'import torch.nn as nn', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'class TextRNN(nn.Module):', type:'ln'},
+         {code:'    def __init__(self):', type:'ln'},
+         {code:'        super().__init__()', type:'ln'},
+         {code:'        self.lstm = nn.LSTM(input_size=100, hidden_size=256,', type:'ln'},
+         {code:'                            num_layers=2, batch_first=True)', type:'ln'},
+         {code:'        self.fc = nn.Linear(256, vocab_size)', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'    def forward(self, x):', type:'ln'},
+         {code:'        out, (h,c) = self.lstm(x)', type:'ln'},
+         {code:'        return self.fc(out[:, -1, :])', type:'ln'},
+       ],
+       tip:'LSTMs have been largely replaced by Transformers for NLP. But they\'re still excellent for time-series forecasting and real-time signal processing.'
+     }
+    },
+
+    // ─── NEURAL NETWORKS ───
+    {id:'activation-fns', cat:'nn', level:'intermediate', name:'Activation Functions',
+     desc:'Mathematical functions that decide if a neuron should "fire." They add non-linearity so networks can learn complex patterns.',
+     snippet:'ReLU: f(x) = max(0,x)  ← most popular',
+     tags:['relu','sigmoid','softmax','tanh','activation'],
+     detail:{
+       full:'Without activation functions, neural networks would just be stacked linear functions (useless). Activations introduce non-linearity, enabling networks to approximate any function.',
+       analogy:'Activation functions are like light switches with dimmers. Sigmoid = old on/off switch. ReLU = modern dimmer that cuts off negatives. Softmax = distributes brightness across multiple lights.',
+       examples:[
+         {code:'import torch', type:'ln'},
+         {code:'import torch.nn.functional as F', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'x = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'print(F.relu(x))     # [0, 0, 0, 1, 2] — kill negatives', type:'ln'},
+         {code:'print(F.sigmoid(x))  # [0.12, 0.27, 0.5, 0.73, 0.88] — 0-1', type:'ln'},
+         {code:'print(F.tanh(x))     # [-0.96, -0.76, 0, 0.76, 0.96] — -1 to 1', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'logits = torch.tensor([2.0, 1.0, 0.1])', type:'ln'},
+         {code:'print(F.softmax(logits, dim=0))  # probabilities sum to 1', type:'ln'},
+       ],
+       tip:'Use ReLU (or GELU/SiLU) for hidden layers. Sigmoid for binary output. Softmax for multi-class output. Avoid Sigmoid/Tanh in deep networks (vanishing gradient).'
+     }
+    },
+    {id:'dropout', cat:'nn', level:'intermediate', name:'Dropout & Regularization',
+     desc:'Dropout randomly turns off neurons during training to prevent overfitting. L1/L2 regularization adds penalty terms to the loss.',
+     snippet:'nn.Dropout(p=0.5)  # randomly zero 50% of neurons',
+     tags:['dropout','regularization','overfitting','L2'],
+     detail:{
+       full:'Dropout is a regularization technique where neurons are randomly disabled during training, forcing the network to learn redundant representations. This prevents overfitting.',
+       analogy:'Dropout is like studying with some of your notes randomly hidden each session. You\'re forced to understand concepts deeply rather than memorizing specific paths.',
+       examples:[
+         {code:'model = nn.Sequential(', type:'ln'},
+         {code:'    nn.Linear(784, 512),', type:'ln'},
+         {code:'    nn.ReLU(),', type:'ln'},
+         {code:'    nn.Dropout(p=0.5),    # drop 50% during training', type:'ln'},
+         {code:'    nn.Linear(512, 256),', type:'ln'},
+         {code:'    nn.ReLU(),', type:'ln'},
+         {code:'    nn.Dropout(p=0.3),', type:'ln'},
+         {code:'    nn.Linear(256, 10)', type:'ln'},
+         {code:')', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'model.train()  # dropout ON', type:'ln'},
+         {code:'model.eval()   # dropout OFF (inference)', type:'ln'},
+       ],
+       tip:'Dropout is automatically disabled during .eval() mode. Typical values: 0.2-0.5. Batch Normalization is another powerful regularizer.'
+     }
+    },
+    {id:'transformer-arch', cat:'nn', level:'advanced', name:'The Transformer Architecture',
+     desc:'The revolutionary architecture behind GPT, BERT, and all modern LLMs. Based on self-attention: every token looks at every other token.',
+     snippet:'MultiHeadAttention + FeedForward + LayerNorm',
+     tags:['transformer','attention','encoder','decoder','GPT','BERT'],
+     detail:{
+       full:'Introduced in "Attention is All You Need" (2017), Transformers replaced RNNs for NLP. They process all tokens in parallel using self-attention, which weighs the relevance of each token to every other token.',
+       analogy:'Reading a sentence, "The cat sat on the mat because it was tired." To understand "it", you need to look back at "cat." Self-attention lets every word look at every other word simultaneously.',
+       examples:[
+         {code:'# Simplified self-attention mechanism', type:'cm'},
+         {code:'import torch', type:'ln'},
+         {code:'import torch.nn.functional as F', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'def self_attention(Q, K, V, d_k):', type:'ln'},
+         {code:'    scores = torch.matmul(Q, K.T) / (d_k ** 0.5)', type:'ln'},
+         {code:'    weights = F.softmax(scores, dim=-1)', type:'ln'},
+         {code:'    return torch.matmul(weights, V)', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Real usage with PyTorch', type:'cm'},
+         {code:'attn = nn.MultiheadAttention(embed_dim=512, num_heads=8)', type:'ln'},
+         {code:'output, _ = attn(query, key, value)', type:'ln'},
+       ],
+       tip:'GPT uses decoder-only Transformers. BERT uses encoder-only. T5/BART use encoder-decoder. Understanding Transformers is essential for any modern AI role.'
+     }
+    },
+    {id:'gan', cat:'nn', level:'advanced', name:'GANs — Generative Adversarial Networks',
+     desc:'Two networks compete: Generator creates fake data, Discriminator tries to detect fakes. Together they produce photorealistic images, videos, and more.',
+     snippet:'Generator ↔ Discriminator  (adversarial game)',
+     tags:['gan','generative','image generation','adversarial'],
+     detail:{
+       full:'GANs consist of two networks trained simultaneously: the Generator creates fake samples, and the Discriminator tries to distinguish real from fake. This adversarial process drives both to improve.',
+       analogy:'Generator = counterfeiter making fake money. Discriminator = bank teller checking for fakes. They keep improving against each other until the counterfeiter makes perfect fakes.',
+       examples:[
+         {code:'# GAN structure in PyTorch', type:'cm'},
+         {code:'class Generator(nn.Module):', type:'ln'},
+         {code:'    def __init__(self):', type:'ln'},
+         {code:'        super().__init__()', type:'ln'},
+         {code:'        self.net = nn.Sequential(', type:'ln'},
+         {code:'            nn.Linear(100, 256), nn.ReLU(),', type:'ln'},
+         {code:'            nn.Linear(256, 784), nn.Tanh())', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'class Discriminator(nn.Module):', type:'ln'},
+         {code:'    def __init__(self):', type:'ln'},
+         {code:'        super().__init__()', type:'ln'},
+         {code:'        self.net = nn.Sequential(', type:'ln'},
+         {code:'            nn.Linear(784, 256), nn.LeakyReLU(0.2),', type:'ln'},
+         {code:'            nn.Linear(256, 1), nn.Sigmoid())', type:'ln'},
+       ],
+       tip:'GANs are notoriously hard to train (mode collapse, instability). StyleGAN, DALL-E (early), and deepfakes all use GAN principles.'
+     }
+    },
+
+    // ─── NLP & LLMs ───
+    {id:'tokenization', cat:'nlp', level:'beginner', name:'Tokenization',
+     desc:'Breaking text into pieces (tokens) that the model can process. Modern LLMs use subword tokenization — words are split into common chunks.',
+     snippet:'"Hello world" → [15496, 995]  (GPT token IDs)',
+     tags:['tokenization','tokens','BPE','vocab'],
+     detail:{
+       full:'Tokenization converts raw text into numerical tokens that models can process. Modern LLMs use Byte Pair Encoding (BPE) to split words into subword units, balancing vocabulary size and coverage.',
+       analogy:'Tokenization is like converting words into Lego bricks. "Unhappiness" might become ["un", "happi", "ness"] — smaller reusable pieces the model has seen before.',
+       examples:[
+         {code:'from transformers import AutoTokenizer', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'tokenizer = AutoTokenizer.from_pretrained("gpt2")', type:'ln'},
+         {code:'text = "Artificial intelligence is transforming the world."', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'tokens = tokenizer.encode(text)', type:'ln'},
+         {code:'print(tokens)  # [50, 313, 9542, 4029, ...]', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'decoded = tokenizer.decode(tokens)', type:'ln'},
+         {code:'print(decoded)  # "Artificial intelligence is transforming..."', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'print(f"Token count: {len(tokens)}")  # affects cost & limits', type:'ln'},
+       ],
+       tip:'GPT-4 has a context window of ~128K tokens (~96K words). More tokens = more expensive API calls. Use tiktoken library to count tokens before API calls.'
+     }
+    },
+    {id:'embeddings', cat:'nlp', level:'intermediate', name:'Word Embeddings & Vectors',
+     desc:'Words converted into high-dimensional number vectors where similar words are numerically close. The foundation of all NLP.',
+     snippet:'king - man + woman ≈ queen  (vector math!)',
+     tags:['embeddings','word2vec','vectors','semantic'],
+     detail:{
+       full:'Embeddings map words, sentences, or documents into dense vectors in a high-dimensional space. Similar meanings = similar vectors. This enables mathematical operations on language.',
+       analogy:'Imagine a huge 3D map where every word is a point. "King" and "Queen" are close together. "Cat" and "Dog" are close. "Love" and "Hate" are far apart. Embeddings do this in 768+ dimensions.',
+       examples:[
+         {code:'from sentence_transformers import SentenceTransformer', type:'ln'},
+         {code:'import numpy as np', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'model = SentenceTransformer("all-MiniLM-L6-v2")', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'sentences = ["I love AI", "Artificial intelligence is great", "I hate broccoli"]', type:'ln'},
+         {code:'embeddings = model.encode(sentences)', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Cosine similarity (closer to 1 = more similar)', type:'cm'},
+         {code:'from sklearn.metrics.pairwise import cosine_similarity', type:'ln'},
+         {code:'sim = cosine_similarity(embeddings)', type:'ln'},
+         {code:'# sim[0][1] ≈ 0.87 (similar)', type:'cm'},
+         {code:'# sim[0][2] ≈ 0.12 (different)', type:'cm'},
+       ],
+       tip:'Embeddings are used everywhere: semantic search, RAG (Retrieval Augmented Generation), recommendation systems, and as input to every Transformer model.'
+     }
+    },
+    {id:'llm', cat:'nlp', level:'intermediate', name:'Large Language Models (LLMs)',
+     desc:'Massive neural networks trained on internet-scale text. They predict the next token, and doing this billions of times produces surprisingly intelligent behavior.',
+     snippet:'GPT-4 · Llama · Claude · Gemini · Mistral',
+     tags:['llm','gpt','language model','foundation model','chatgpt'],
+     detail:{
+       full:'LLMs are Transformer-based models trained on vast amounts of text using next-token prediction. Scale (parameters + data) produces emergent capabilities like reasoning, coding, and math.',
+       analogy:'An LLM is trained by reading essentially the entire internet, then predicting the next word in any sentence. Do this 10 trillion times, and the model develops a deep understanding of language and knowledge.',
+       examples:[
+         {code:'from openai import OpenAI', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'client = OpenAI(api_key="your-key")', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'response = client.chat.completions.create(', type:'ln'},
+         {code:'    model="gpt-4o",', type:'ln'},
+         {code:'    messages=[', type:'ln'},
+         {code:'        {"role": "system", "content": "You are a helpful assistant."},', type:'ln'},
+         {code:'        {"role": "user", "content": "Explain neural networks simply."}', type:'ln'},
+         {code:'    ],', type:'ln'},
+         {code:'    max_tokens=500', type:'ln'},
+         {code:')', type:'ln'},
+         {code:'print(response.choices[0].message.content)', type:'ln'},
+       ],
+       tip:'Key LLMs: GPT-4o (OpenAI), Claude 3.5 (Anthropic), Gemini (Google), Llama 3 (Meta, open source), Mistral (European). Each has different strengths.'
+     }
+    },
+    {id:'rag', cat:'nlp', level:'advanced', name:'RAG — Retrieval Augmented Generation',
+     desc:'Give an LLM access to external documents at query time. It retrieves relevant chunks, then generates answers grounded in that data — solving hallucination.',
+     snippet:'Query → Retrieve chunks → LLM generates answer',
+     tags:['rag','retrieval','vector database','hallucination'],
+     detail:{
+       full:'RAG combines a retrieval system (vector database) with a generative LLM. Documents are chunked and embedded into a vector DB. At query time, relevant chunks are fetched and passed to the LLM as context.',
+       analogy:'RAG is like an open-book exam. Without RAG, the LLM must answer from memory (may hallucinate). With RAG, it can look up the textbook (your documents) first.',
+       examples:[
+         {code:'from langchain.vectorstores import Chroma', type:'ln'},
+         {code:'from langchain.embeddings import OpenAIEmbeddings', type:'ln'},
+         {code:'from langchain.chains import RetrievalQA', type:'ln'},
+         {code:'from langchain.llms import OpenAI', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# 1. Index your documents', type:'cm'},
+         {code:'vectorstore = Chroma.from_documents(docs, OpenAIEmbeddings())', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# 2. Create retriever + chain', type:'cm'},
+         {code:'retriever = vectorstore.as_retriever(search_k=4)', type:'ln'},
+         {code:'chain = RetrievalQA.from_chain_type(OpenAI(), retriever=retriever)', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# 3. Ask questions grounded in your docs', type:'cm'},
+         {code:'answer = chain.run("What is the refund policy?")', type:'ln'},
+       ],
+       tip:'RAG is now standard in production AI apps. Vector DBs: Pinecone, Weaviate, Chroma, Qdrant. Chunking strategy and embedding model choice hugely affect quality.'
+     }
+    },
+    {id:'prompt-eng', cat:'nlp', level:'intermediate', name:'Prompt Engineering',
+     desc:'The art of crafting inputs to LLMs to get reliable, accurate, and useful outputs. A critical skill for anyone working with AI.',
+     snippet:'System + Context + Examples + Clear Instruction',
+     tags:['prompting','chain-of-thought','few-shot','system prompt'],
+     detail:{
+       full:'Prompt Engineering is the practice of designing effective inputs for LLMs. Good prompts dramatically improve output quality, consistency, and reliability.',
+       analogy:'Talking to an LLM is like giving instructions to a highly capable but very literal intern. The clearer and more specific you are, the better the result.',
+       examples:[
+         {code:'# BAD PROMPT', type:'cm'},
+         {code:'prompt = "Tell me about marketing"', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# GOOD PROMPT — System + Role + Format + Examples', type:'cm'},
+         {code:'system = "You are a senior marketing strategist."', type:'ln'},
+         {code:'prompt = """', type:'ln'},
+         {code:'Analyze this product for a B2B SaaS company.', type:'ln'},
+         {code:'Product: AI writing assistant', type:'ln'},
+         {code:'Target: HR managers at 500+ employee companies', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'Provide:', type:'ln'},
+         {code:'1. Three key value propositions (one sentence each)', type:'ln'},
+         {code:'2. Top two objections and responses', type:'ln'},
+         {code:'Format: Markdown with headers', type:'ln'},
+         {code:'"""', type:'ln'},
+       ],
+       tip:'Chain-of-Thought (CoT): Add "Let\'s think step by step" for complex reasoning. Few-shot: Provide 2-3 examples of good output. These two techniques alone dramatically improve results.'
+     }
+    },
+
+    // ─── COMPUTER VISION ───
+    {id:'image-classification', cat:'cv', level:'beginner', name:'Image Classification',
+     desc:'Teaching AI to identify what is in an image — the "Hello World" of computer vision. Input: image. Output: label.',
+     snippet:'model.predict(img) → "cat" (97.3% confidence)',
+     tags:['classification','image','label','resnet','mobilenet'],
+     detail:{
+       full:'Image classification assigns a label to an entire image. CNNs learn hierarchical features — from edges to shapes to objects — to make predictions.',
+       analogy:'Like showing a child pictures of animals and saying the name. After thousands of examples, they can identify a cat they\'ve never seen before.',
+       examples:[
+         {code:'from tensorflow.keras.applications import MobileNetV2', type:'ln'},
+         {code:'from tensorflow.keras.applications.mobilenet_v2 import preprocess_input, decode_predictions', type:'ln'},
+         {code:'import numpy as np', type:'ln'},
+         {code:'from PIL import Image', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'model = MobileNetV2(weights="imagenet")', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'img = Image.open("cat.jpg").resize((224, 224))', type:'ln'},
+         {code:'x = np.expand_dims(np.array(img), axis=0)', type:'ln'},
+         {code:'x = preprocess_input(x)', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'preds = model.predict(x)', type:'ln'},
+         {code:'print(decode_predictions(preds, top=3))', type:'ln'},
+       ],
+       tip:'Use transfer learning — don\'t train from scratch! MobileNet, ResNet, EfficientNet are pre-trained on ImageNet (1M images). Fine-tune on your data in minutes.'
+     }
+    },
+    {id:'object-detection', cat:'cv', level:'intermediate', name:'Object Detection',
+     desc:'Detect AND locate multiple objects in an image with bounding boxes. More complex than classification — tells you WHAT and WHERE.',
+     snippet:'YOLO / DETR: [class, x, y, width, height]',
+     tags:['yolo','object detection','bounding box','DETR'],
+     detail:{
+       full:'Object detection identifies multiple objects and draws bounding boxes around each. Modern detectors like YOLO process entire images in one pass at real-time speed.',
+       analogy:'Classification = "There is a dog in this photo." Detection = "There is a dog at position (120,80), a cat at (300,200), and a chair at (50,400)."',
+       examples:[
+         {code:'from ultralytics import YOLO', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# YOLOv11 — one of the fastest detectors', type:'cm'},
+         {code:'model = YOLO("yolo11n.pt")  # nano = fastest', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Detect in image', type:'cm'},
+         {code:'results = model("street.jpg")', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'for r in results:', type:'ln'},
+         {code:'    for box in r.boxes:', type:'ln'},
+         {code:'        print(f"Class: {r.names[int(box.cls)]}")', type:'ln'},
+         {code:'        print(f"Confidence: {float(box.conf):.2f}")', type:'ln'},
+         {code:'        print(f"Box: {box.xyxy}")  # x1,y1,x2,y2', type:'ln'},
+       ],
+       tip:'YOLO (You Only Look Once) is the go-to for real-time detection. YOLOv8/v11 are currently top choices. Use Roboflow to easily build custom detection datasets.'
+     }
+    },
+    {id:'diffusion', cat:'cv', level:'advanced', name:'Diffusion Models & Image Generation',
+     desc:'The AI behind Stable Diffusion and DALL-E. They learn to reverse a noise-adding process, generating stunning images from text prompts.',
+     snippet:'text_prompt → noise removal → image',
+     tags:['diffusion','stable diffusion','dall-e','image generation','midjourney'],
+     detail:{
+       full:'Diffusion models are trained by gradually adding noise to images then learning to reverse the process. During generation, they start from pure noise and iteratively denoise guided by text embeddings.',
+       analogy:'Imagine a sand mandala. Someone slowly destroys it (adds noise). A diffusion model learns to reverse this destruction from any stage — starting from pure sand (noise) and reconstructing art.',
+       examples:[
+         {code:'from diffusers import StableDiffusionPipeline', type:'ln'},
+         {code:'import torch', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'pipe = StableDiffusionPipeline.from_pretrained(', type:'ln'},
+         {code:'    "runwayml/stable-diffusion-v1-5",', type:'ln'},
+         {code:'    torch_dtype=torch.float16', type:'ln'},
+         {code:').to("cuda")', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'image = pipe(', type:'ln'},
+         {code:'    prompt="A futuristic city at night, cyberpunk style",', type:'ln'},
+         {code:'    negative_prompt="blurry, bad quality",', type:'ln'},
+         {code:'    num_inference_steps=30,', type:'ln'},
+         {code:'    guidance_scale=7.5', type:'ln'},
+         {code:').images[0]', type:'ln'},
+         {code:'image.save("output.png")', type:'ln'},
+       ],
+       tip:'Key models: Stable Diffusion (open source), DALL-E 3 (OpenAI), Midjourney (quality leader), Flux (newer SOTA). LoRA fine-tuning lets you teach a model your style/face with 20 images.'
+     }
+    },
+
+    // ─── AI TOOLS & FRAMEWORKS ───
+    {id:'pytorch', cat:'tools', level:'intermediate', name:'PyTorch',
+     desc:'The most popular deep learning framework for research and increasingly production. Dynamic computation graph, Pythonic design, huge community.',
+     snippet:'import torch; tensor = torch.randn(3, 224, 224)',
+     tags:['pytorch','framework','tensors','autograd'],
+     detail:{
+       full:'PyTorch is a flexible deep learning framework by Meta. Its dynamic computation graph makes debugging intuitive. It\'s the dominant framework in AI research and increasingly in production.',
+       analogy:'PyTorch is to deep learning what Python is to programming — flexible, readable, and has the best community resources.',
+       examples:[
+         {code:'import torch', type:'ln'},
+         {code:'import torch.nn as nn', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Tensors — the core data structure', type:'cm'},
+         {code:'x = torch.randn(3, 4)         # random 3x4 matrix', type:'ln'},
+         {code:'y = torch.zeros(3, 4)          # zeros', type:'ln'},
+         {code:'z = x + y                      # element-wise ops', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Autograd — automatic differentiation', type:'cm'},
+         {code:'x = torch.tensor([3.0], requires_grad=True)', type:'ln'},
+         {code:'y = x ** 2 + 2*x + 1', type:'ln'},
+         {code:'y.backward()          # compute gradients', type:'ln'},
+         {code:'print(x.grad)         # dy/dx = 2x+2 = 8.0', type:'ln'},
+       ],
+       tip:'PyTorch for research & flexibility. TensorFlow/Keras for production deployment & mobile. JAX for research requiring extreme speed. Start with PyTorch — it\'s the most educational.'
+     }
+    },
+    {id:'huggingface', cat:'tools', level:'intermediate', name:'Hugging Face',
+     desc:'The GitHub of AI — 500,000+ pre-trained models, datasets, and the Transformers library. Central hub of the modern AI ecosystem.',
+     snippet:'from transformers import pipeline  # 3 lines to use GPT/BERT',
+     tags:['huggingface','transformers','pretrained','hub','pipeline'],
+     detail:{
+       full:'Hugging Face provides the Transformers library (unified API for all major models), the Model Hub (host/share models), Datasets library, and Spaces (deploy demos free).',
+       analogy:'Hugging Face is like App Store for AI models. Instead of building from scratch, you download a pre-trained model and adapt it to your task in hours instead of months.',
+       examples:[
+         {code:'from transformers import pipeline', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Sentiment analysis — 3 lines!', type:'cm'},
+         {code:'classifier = pipeline("sentiment-analysis")', type:'ln'},
+         {code:'result = classifier("I absolutely love this product!")', type:'ln'},
+         {code:'# [{"label": "POSITIVE", "score": 0.9998}]', type:'cm'},
+         {code:'', type:'ln'},
+         {code:'# Translation', type:'cm'},
+         {code:'translator = pipeline("translation_en_to_fr")', type:'ln'},
+         {code:'print(translator("Hello, how are you?"))', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Text generation', type:'cm'},
+         {code:'generator = pipeline("text-generation", model="gpt2")', type:'ln'},
+         {code:'print(generator("Once upon a time", max_length=50))', type:'ln'},
+       ],
+       tip:'Hugging Face AutoTrain lets you fine-tune models with NO code. Use Spaces to demo your AI apps free (Gradio/Streamlit). Their documentation is the best in AI.'
+     }
+    },
+    {id:'langchain', cat:'tools', level:'advanced', name:'LangChain & LLM Apps',
+     desc:'The framework for building LLM-powered applications: chatbots, agents, RAG systems, and multi-step AI pipelines.',
+     snippet:'chain = prompt | llm | output_parser',
+     tags:['langchain','llm apps','agents','chains','tools'],
+     detail:{
+       full:'LangChain provides abstractions for building LLM applications: chains (sequences of calls), agents (LLMs that use tools), memory (conversation history), and integrations with 100+ services.',
+       analogy:'LangChain is like Express.js but for AI apps. Instead of building HTTP handling from scratch, you use the framework to wire together prompts, models, memory, and tools.',
+       examples:[
+         {code:'from langchain_openai import ChatOpenAI', type:'ln'},
+         {code:'from langchain.prompts import ChatPromptTemplate', type:'ln'},
+         {code:'from langchain_core.output_parsers import StrOutputParser', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Simple LCEL chain', type:'cm'},
+         {code:'llm = ChatOpenAI(model="gpt-4o")', type:'ln'},
+         {code:'prompt = ChatPromptTemplate.from_template(', type:'ln'},
+         {code:'    "Explain {topic} in simple terms for a 10-year-old.")', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'chain = prompt | llm | StrOutputParser()', type:'ln'},
+         {code:'result = chain.invoke({"topic": "quantum computing"})', type:'ln'},
+         {code:'print(result)', type:'ln'},
+       ],
+       tip:'LangChain moves fast — the API changes often. For production, consider LangGraph (better for complex agents) or building directly with the Anthropic/OpenAI SDK for simpler apps.'
+     }
+    },
+    {id:'finetuning', cat:'tools', level:'pro', name:'Fine-Tuning LLMs',
+     desc:'Adapt a pre-trained LLM to your specific task or style using your own data. LoRA/QLoRA makes this cheap enough to run on a single GPU.',
+     snippet:'LoRA: train <1% of weights, get 90% of results',
+     tags:['fine-tuning','lora','qlora','sft','training'],
+     detail:{
+       full:'Fine-tuning updates a pre-trained model\'s weights on task-specific data. LoRA (Low-Rank Adaptation) inserts small trainable matrices, reducing trainable parameters by 99% while preserving performance.',
+       analogy:'A pre-trained LLM is like a brilliant generalist consultant. Fine-tuning is like having them work in your industry for 3 months — they keep all general knowledge but gain deep domain expertise.',
+       examples:[
+         {code:'from transformers import AutoModelForCausalLM, AutoTokenizer', type:'ln'},
+         {code:'from peft import LoraConfig, get_peft_model', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-3B")', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# LoRA config — only train tiny adapters', type:'cm'},
+         {code:'lora_config = LoraConfig(', type:'ln'},
+         {code:'    r=16,              # rank (lower = fewer params)', type:'ln'},
+         {code:'    lora_alpha=32,     # scaling factor', type:'ln'},
+         {code:'    target_modules=["q_proj", "v_proj"],', type:'ln'},
+         {code:'    lora_dropout=0.05,', type:'ln'},
+         {code:')', type:'ln'},
+         {code:'model = get_peft_model(model, lora_config)', type:'ln'},
+         {code:'model.print_trainable_parameters()', type:'ln'},
+         {code:'# trainable: 0.42% of all params', type:'cm'},
+       ],
+       tip:'Use Unsloth library for 2x faster LoRA fine-tuning. Google Colab T4 is free and sufficient for fine-tuning 7B models with QLoRA. Axolotl is popular for production fine-tuning.'
+     }
+    },
+    {id:'mlops', cat:'tools', level:'pro', name:'MLOps & Deployment',
+     desc:'Taking AI from notebook to production: model serving, versioning, monitoring, CI/CD for ML pipelines.',
+     snippet:'train → evaluate → version → serve → monitor',
+     tags:['mlops','deployment','docker','fastapi','monitoring'],
+     detail:{
+       full:'MLOps applies DevOps principles to machine learning: automated training pipelines, model registries, A/B testing, drift detection, and continuous retraining.',
+       analogy:'MLOps is the difference between a science project and a product. A notebook is a prototype. MLOps is the plumbing that keeps that prototype running reliably at scale.',
+       examples:[
+         {code:'# FastAPI model serving', type:'cm'},
+         {code:'from fastapi import FastAPI', type:'ln'},
+         {code:'import joblib, numpy as np', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'app = FastAPI()', type:'ln'},
+         {code:'model = joblib.load("model.pkl")', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'@app.post("/predict")', type:'ln'},
+         {code:'def predict(data: dict):', type:'ln'},
+         {code:'    X = np.array(data["features"]).reshape(1,-1)', type:'ln'},
+         {code:'    pred = model.predict(X)', type:'ln'},
+         {code:'    return {"prediction": pred[0], "model_version": "1.2.0"}', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Run: uvicorn app:app --host 0.0.0.0 --port 8000', type:'cm'},
+       ],
+       tip:'Key MLOps tools: MLflow (experiment tracking), DVC (data versioning), BentoML/TorchServe (serving), Weights & Biases (monitoring). Start with MLflow — it\'s free and easy.'
+     }
+    },
+
+    // ─── ETHICS ───
+    {id:'ai-bias', cat:'ethics', level:'beginner', name:'AI Bias & Fairness',
+     desc:'AI systems can inherit and amplify biases present in training data — leading to unfair outcomes for different groups of people.',
+     snippet:'Garbage in → Garbage out (biased data → biased model)',
+     tags:['bias','fairness','ethics','discrimination'],
+     detail:{
+       full:'AI bias occurs when training data reflects historical human biases. Models trained on biased data make biased predictions, often discriminating based on race, gender, or socioeconomic status.',
+       analogy:'If you only teach a child about successes of one gender, they\'ll have a biased view of who can succeed. AI is the same — it reflects the biases in its training data.',
+       examples:[
+         {code:'# Example: Measuring bias in a classifier', type:'cm'},
+         {code:'from aif360.metrics import BinaryLabelDatasetMetric', type:'ln'},
+         {code:'', type:'ln'},
+         {code:'# Check disparate impact', type:'cm'},
+         {code:'# DI = P(good outcome | minority) / P(good outcome | majority)', type:'cm'},
+         {code:'# DI < 0.8 is considered discriminatory (80% rule)', type:'cm'},
+         {code:'', type:'ln'},
+         {code:'metric = BinaryLabelDatasetMetric(dataset, unprivileged={"race":0}, privileged={"race":1})', type:'ln'},
+         {code:'print(f"Disparate Impact: {metric.disparate_impact():.3f}")', type:'ln'},
+       ],
+       tip:'Famous examples: Amazon\'s hiring AI penalized women\'s resumes. Facial recognition systems had higher error rates for darker skin tones. Bias testing is now a legal requirement in many industries.'
+     }
+    },
+    {id:'hallucination', cat:'ethics', level:'beginner', name:'AI Hallucination',
+     desc:'LLMs sometimes confidently state false information. They generate plausible-sounding text even when they don\'t "know" the answer.',
+     snippet:'LLM: "Einstein won the Nobel Prize in 1934" ← FALSE',
+     tags:['hallucination','reliability','factuality','trust'],
+     detail:{
+       full:'Hallucination is when LLMs generate factually incorrect, fabricated, or misleading information with high confidence. It\'s a fundamental limitation of next-token prediction.',
+       analogy:'An LLM hallucinating is like a very confident friend who fills in gaps in their knowledge with plausible-sounding guesses — and doesn\'t tell you which parts they\'re unsure about.',
+       examples:[
+         {code:'# Mitigation strategies:', type:'cm'},
+         {code:'', type:'ln'},
+         {code:'# 1. RAG — ground answers in real documents', type:'cm'},
+         {code:'# 2. Ask for citations and verify them', type:'cm'},
+         {code:'# 3. Add "I don\'t know" option to prompts', type:'cm'},
+         {code:'# 4. Temperature = 0 for factual tasks (less creative)', type:'cm'},
+         {code:'# 5. Use tool calls for real-time data', type:'cm'},
+         {code:'', type:'ln'},
+         {code:'prompt = """Answer the question. If unsure, say "I don\'t know."', type:'ln'},
+         {code:'Do NOT make up information. Question: {question}"""', type:'ln'},
+       ],
+       tip:'Never fully trust LLM output for medical, legal, or financial decisions without verification. RAG dramatically reduces hallucination by grounding responses in verified documents.'
+     }
+    },
+    {id:'ai-safety', cat:'ethics', level:'advanced', name:'AI Safety & Alignment',
+     desc:'Ensuring advanced AI systems do what humans actually want. As AI becomes more powerful, alignment becomes an existential concern.',
+     snippet:'RLHF · Constitutional AI · Interpretability',
+     tags:['alignment','safety','RLHF','constitutional ai','interpretability'],
+     detail:{
+       full:'AI Safety studies how to ensure AI systems are aligned with human values and intentions. Key challenges: specification (what do we want?), robustness (does it work reliably?), assurance (can we verify it?).',
+       analogy:'Alignment is like programming a very powerful genie: you need to be extremely precise about your wishes because a misaligned superintelligent AI could technically fulfill your request in catastrophic ways.',
+       examples:[
+         {code:'# RLHF (Reinforcement Learning from Human Feedback)', type:'cm'},
+         {code:'# Used to train ChatGPT, Claude, Gemini', type:'cm'},
+         {code:'', type:'ln'},
+         {code:'# Step 1: Supervised Fine-Tuning (SFT)', type:'cm'},
+         {code:'# Human demonstrates ideal responses', type:'cm'},
+         {code:'', type:'ln'},
+         {code:'# Step 2: Reward Model Training', type:'cm'},
+         {code:'# Humans rank multiple responses', type:'cm'},
+         {code:'# Train a model to predict human preference', type:'cm'},
+         {code:'', type:'ln'},
+         {code:'# Step 3: PPO Optimization', type:'cm'},
+         {code:'# Fine-tune LLM to maximize reward model score', type:'cm'},
+         {code:'# While staying close to original distribution (KL penalty)', type:'cm'},
+       ],
+       tip:'Key organizations: Anthropic, OpenAI Safety, DeepMind Safety, MIRI, ARC. Key concepts to learn: mesa-optimization, deceptive alignment, interpretability/mechanistic interpretability.'
+     }
+    },
+    {id:'agi-future', cat:'ethics', level:'researcher', name:'AGI & The Future of AI',
+     desc:'Artificial General Intelligence — systems that can match or exceed human performance across all cognitive tasks. Are we close? What are the implications?',
+     snippet:'GPT-4 → AGI? Experts disagree. Timeline: 2-100 years.',
+     tags:['agi','future','superintelligence','singularity','research'],
+     detail:{
+       full:'AGI is hypothetical AI that matches human-level general intelligence across all domains. Current AI excels at specific tasks but lacks general reasoning, planning, and common sense at human level.',
+       analogy:'Current AI is like a collection of very specialized tools — one for language, one for images, one for games. AGI would be like a single universal Swiss Army knife that works as well as the best specialized tool for any task.',
+       examples:[
+         {code:'# Current frontier capabilities (2025)', type:'cm'},
+         {code:'# ✅ Language understanding & generation (GPT-4, Claude)', type:'cm'},
+         {code:'# ✅ Code generation (Copilot, Devin, Claude)', type:'cm'},
+         {code:'# ✅ Image/video generation (DALL-E, Sora)', type:'cm'},
+         {code:'# ✅ Scientific reasoning (AlphaFold, AlphaMath)', type:'cm'},
+         {code:'# ❓ Common sense physical world understanding', type:'cm'},
+         {code:'# ❓ Long-horizon planning and execution', type:'cm'},
+         {code:'# ❓ Genuine creative reasoning', type:'cm'},
+         {code:'# ❌ Consciousness, sentience (no evidence)', type:'cm'},
+       ],
+       tip:'Read: "Superintelligence" (Bostrom), "The Alignment Problem" (Christian), "Human Compatible" (Russell). Follow: Andrej Karpathy, Yann LeCun, Geoffrey Hinton, Demis Hassabis on social media.'
+     }
+    },
+  ]
+};
+
+// ─── STATE ───────────────────────────────────────────────────
+const S = { level:'all', cat:'all', view:'topics', search:'', learned:new Set() };
+let quizBank=[], quizIdx=0, quizScore=0, quizTotal=0;
+let termHist=[], termHistIdx=-1;
+
+// ─── NEURAL NETWORK CANVAS ───────────────────────────────────
+(function(){
+  const canvas=document.getElementById('neural-canvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,nodes=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;buildNodes();}
+  function buildNodes(){
+    nodes=[];
+    const n=Math.floor(W*H/22000);
+    for(let i=0;i<n;i++) nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*2+1});
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;});
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<120){
+          ctx.beginPath();
+          ctx.strokeStyle=`rgba(147,51,234,${(1-d/120)*.15})`;
+          ctx.lineWidth=.5;
+          ctx.moveTo(nodes[i].x,nodes[i].y);
+          ctx.lineTo(nodes[j].x,nodes[j].y);
+          ctx.stroke();
+        }
+      }
+      ctx.beginPath();
+      ctx.arc(nodes[i].x,nodes[i].y,nodes[i].r,0,Math.PI*2);
+      ctx.fillStyle='rgba(147,51,234,0.4)';
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);
+  resize();draw();
+})();
+
+// ─── INIT ────────────────────────────────────────────────────
+function init(){
+  renderCats();renderProg();renderContent();
+  animCount('total-topics',DB.topics.length);
+  document.getElementById('foot-year').textContent=new Date().getFullYear();
+}
+
+function animCount(id,target){
+  let v=0;const el=document.getElementById(id);
+  const t=setInterval(()=>{v=Math.min(v+Math.ceil(target/25),target);el.textContent=v;if(v>=target)clearInterval(t);},40);
+}
+
+// ─── SIDEBAR ─────────────────────────────────────────────────
+function renderCats(){
+  const el=document.getElementById('cat-list');
+  const allN=DB.topics.length;
+  let h=`<div class="cat-item ${S.cat==='all'?'active':''}" onclick="setCat('all')">
+    <div class="cl"><div class="cat-icon" style="background:rgba(147,51,234,.12)">⚡</div><span>All Topics</span></div>
+    <span class="cbadge">${allN}</span></div>`;
+  DB.categories.forEach(c=>{
+    const n=DB.topics.filter(t=>t.cat===c.id).length;
+    h+=`<div class="cat-item ${S.cat===c.id?'active':''}" onclick="setCat('${c.id}')">
+      <div class="cl"><div class="cat-icon" style="background:${c.color}22">${c.icon}</div><span>${c.name}</span></div>
+      <span class="cbadge">${n}</span></div>`;
+  });
+  el.innerHTML=h;
+}
+
+function renderProg(){
+  const lvls=[['beginner','#10b981'],['intermediate','#f59e0b'],['advanced','#ef4444'],['pro','#c084fc'],['researcher','#ec4899']];
+  let h='';
+  lvls.forEach(([l,col])=>{
+    const total=DB.topics.filter(t=>t.level===l).length;
+    const ld=[...S.learned].filter(id=>DB.topics.find(t=>t.id===id&&t.level===l)).length;
+    const pct=total>0?Math.round(ld/total*100):0;
+    h+=`<div class="pi"><div class="ph"><span class="pn">${l.charAt(0).toUpperCase()+l.slice(1)}</span><span class="pp">${ld}/${total}</span></div>
+    <div class="pbar"><div class="pfill" style="width:${pct}%;background:${col}"></div></div></div>`;
+  });
+  document.getElementById('prog-wrap').innerHTML=h;
+  document.getElementById('learned-count').textContent=S.learned.size;
+}
+
+// ─── FILTER ──────────────────────────────────────────────────
+function getFiltered(){
+  return DB.topics.filter(t=>{
+    const lOk=S.level==='all'||t.level===S.level;
+    const cOk=S.cat==='all'||t.cat===S.cat;
+    const q=S.search;
+    const sOk=!q||t.name.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q)||t.tags.some(g=>g.includes(q));
+    return lOk&&cOk&&sOk;
+  });
+}
+
+// ─── RENDER CONTENT ──────────────────────────────────────────
+function renderContent(){
+  const el=document.getElementById('content');
+  if(S.view==='roadmap'){renderRoadmap();return;}
+  if(S.view==='cheatsheet'){renderCheatsheet();return;}
+  if(S.view==='glossary'){renderGlossary();return;}
+  if(S.view==='quiz'){renderQuiz();return;}
+  if(S.view==='terminal'){renderTerminal();return;}
+  renderTopics();
+}
+
+function renderTopics(){
+  const el=document.getElementById('content');
+  const ft=getFiltered();
+  if(!ft.length){
+    el.innerHTML=`<div style="text-align:center;padding:60px;color:var(--muted)"><div style="font-size:3rem;margin-bottom:12px">🤖</div><div style="font-size:1rem;font-weight:700;color:var(--text)">No topics found</div><div style="margin-top:6px;font-size:.84rem">Try a different search or filter</div></div>`;
+    return;
+  }
+  const catName=S.cat==='all'?'All Topics':DB.categories.find(c=>c.id===S.cat)?.name||'';
+  el.innerHTML=`<div class="sec-head"><h2>🧠 <span class="hl">${catName}</span></h2><div class="cnt-badge">${ft.length} topics</div></div><div class="cards-grid" id="cgrid"></div>`;
+  const grid=document.getElementById('cgrid');
+  ft.forEach((t,i)=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.style.animation=`fadeIn .4s ${i*.04}s ease both`;
+    const cat=DB.categories.find(c=>c.id===t.cat);
+    const isL=S.learned.has(t.id);
+    div.innerHTML=`
+      ${isL?'<div class="learned-mark">✓</div>':''}
+      <div class="card-head">
+        <div class="card-title">
+          <div class="c-icon" style="background:${cat?.color||'#9333ea'}22">${cat?.icon||'🤖'}</div>
+          <span>${t.name}</span>
+        </div>
+        <span class="diff d-${t.level}">${t.level}</span>
+      </div>
+      <div class="card-body">
+        <p>${t.desc}</p>
+        <div class="code-snip">${t.snippet}<button class="cp" onclick="copySnip(event,'${t.snippet.replace(/'/g,"\\'")}')">copy</button></div>
+        <div class="ctags">${t.tags.map(g=>`<span class="ctag">${g}</span>`).join('')}</div>
+      </div>`;
+    div.onclick=e=>{if(!e.target.classList.contains('cp'))openModal(t);};
+    grid.appendChild(div);
+  });
+}
+
+// ─── ROADMAP ─────────────────────────────────────────────────
+function renderRoadmap(){
+  const el=document.getElementById('content');
+  const stages=[
+    {n:'01',title:'Understanding AI Basics',status:'done',desc:'What is AI, ML, DL? How do they relate? What can AI do today?',topics:['AI vs ML vs DL','Supervised/Unsupervised','Data & Labels','Training vs Inference','AI applications tour']},
+    {n:'02',title:'Python & Math Foundations',status:'done',desc:'Python programming, NumPy, Pandas, and the essential math: Linear Algebra, Calculus, Statistics.',topics:['Python basics','NumPy arrays','Pandas DataFrames','Linear algebra','Probability & stats']},
+    {n:'03',title:'Classical Machine Learning',status:'active',desc:'Core ML algorithms: regression, classification, clustering, dimensionality reduction.',topics:['Linear/Logistic Regression','Decision Trees, Random Forest','K-Means Clustering','PCA','SVM','Cross-validation']},
+    {n:'04',title:'Deep Learning Fundamentals',status:'locked',desc:'Neural networks from scratch, backpropagation, activation functions, optimizers.',topics:['Perceptron & MLP','Backpropagation','Gradient Descent & Adam','Batch Normalization','Dropout','PyTorch basics']},
+    {n:'05',title:'Computer Vision',status:'locked',desc:'CNNs, image classification, object detection, segmentation.',topics:['CNN architecture','Transfer Learning','ResNet/EfficientNet','YOLO detection','Image Segmentation','Data augmentation']},
+    {n:'06',title:'Natural Language Processing',status:'locked',desc:'Text processing, embeddings, RNNs, and Transformer architecture.',topics:['Tokenization','Word Embeddings','LSTM/GRU','Attention mechanism','Transformers','BERT & GPT']},
+    {n:'07',title:'Large Language Models',status:'locked',desc:'How LLMs work, how to use them, prompt engineering, RAG, and fine-tuning.',topics:['LLM architecture','OpenAI/Anthropic API','Prompt Engineering','RAG systems','LoRA fine-tuning','LangChain/LangGraph']},
+    {n:'08',title:'Generative AI',status:'locked',desc:'GANs, Diffusion models, image/video/audio generation.',topics:['GAN training','Stable Diffusion','DALL-E / Flux','Video generation (Sora)','Voice cloning','Multimodal models']},
+    {n:'09',title:'MLOps & Production',status:'locked',desc:'Take your models from notebook to production: serving, monitoring, CI/CD for ML.',topics:['Model serving (FastAPI)','Docker & containerization','MLflow tracking','Model monitoring','Feature stores','CI/CD for ML']},
+    {n:'10',title:'AI Research & Frontier',status:'locked',desc:'Reinforcement Learning, AI Safety, Alignment, and reading papers.',topics:['RL & RLHF','AI Safety & Alignment','Mechanistic Interpretability','Reading arxiv papers','Reproducing SOTA results','Contributing to open source']},
+  ];
+  el.innerHTML=`<div class="sec-head"><h2>🗺 Learning <span class="hl">Roadmap</span></h2><div class="cnt-badge">${stages.length} stages</div></div>
+  <div style="background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:22px;">
+    <div class="roadmap" id="rm"></div>
+  </div>`;
+  const rm=document.getElementById('rm');
+  stages.forEach(s=>{
+    const d=document.createElement('div');d.className='rm-item';
+    const icon=s.status==='done'?'✓':s.status==='active'?'▶':s.n;
+    d.innerHTML=`<div class="rm-line"></div>
+    <div class="rm-num ${s.status}">${icon}</div>
+    <div class="rm-content">
+      <h4 style="${s.status==='locked'?'color:var(--muted2)':''}">${s.title}
+        ${s.status==='done'?'<span style="color:var(--green);font-size:.78rem"> — Done ✓</span>':s.status==='active'?'<span style="color:#c084fc;font-size:.78rem"> — In Progress</span>':''}
+      </h4>
+      <p>${s.desc}</p>
+      <div class="rm-tags">${s.topics.map(t=>`<span class="rm-tag">${t}</span>`).join('')}</div>
+    </div>`;
+    rm.appendChild(d);
+  });
+}
+
+// ─── CHEATSHEET ───────────────────────────────────────────────
+function renderCheatsheet(){
+  const el=document.getElementById('content');
+  el.innerHTML=`<div class="sec-head"><h2>📋 <span class="hl">Quick Cheatsheet</span></h2><div class="cnt-badge">${DB.topics.length} entries</div></div>
+  <div style="background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+    <table class="cs-table"><thead><tr><th>Topic</th><th>Category</th><th>Key Syntax / Concept</th><th>Level</th></tr></thead>
+    <tbody>${DB.topics.map(t=>{
+      const cat=DB.categories.find(c=>c.id===t.cat);
+      return `<tr>
+        <td style="font-weight:700;font-size:.82rem">${t.name}</td>
+        <td style="font-size:.78rem;color:var(--muted2)">${cat?.icon} ${cat?.name}</td>
+        <td class="term">${t.snippet}</td>
+        <td><span class="diff d-${t.level}">${t.level}</span></td>
+      </tr>`;
+    }).join('')}</tbody></table>
+  </div>`;
+}
+
+// ─── GLOSSARY ─────────────────────────────────────────────────
+function renderGlossary(){
+  const el=document.getElementById('content');
+  const terms=[
+    {t:'Algorithm',d:'A set of rules or instructions a computer follows to solve a problem.'},
+    {t:'Artificial Neural Network',d:'A computing system inspired by biological brains, made of interconnected nodes (neurons).'},
+    {t:'Attention Mechanism',d:'A technique allowing models to focus on relevant parts of the input when generating output.'},
+    {t:'Autoencoder',d:'A neural network that learns to compress data and reconstruct it, useful for denoising and anomaly detection.'},
+    {t:'Batch Size',d:'Number of training samples processed before updating model weights.'},
+    {t:'BERT',d:'Bidirectional Encoder Representations from Transformers — Google\'s encoder-only language model.'},
+    {t:'Bias (statistical)',d:'Systematic error in model predictions; underfitting is associated with high bias.'},
+    {t:'Chatbot',d:'AI system that converses with users using NLP, ranging from simple rule-based to LLM-powered.'},
+    {t:'Classification',d:'Predicting which discrete category an input belongs to (e.g., spam/not spam).'},
+    {t:'Clustering',d:'Unsupervised grouping of similar data points without predefined labels.'},
+    {t:'Confusion Matrix',d:'Table showing model performance: true positives, false positives, true negatives, false negatives.'},
+    {t:'Context Window',d:'The maximum amount of text an LLM can process at once, measured in tokens.'},
+    {t:'Cross-Entropy Loss',d:'Common loss function for classification problems, measures difference between predicted and true distributions.'},
+    {t:'Dataset',d:'A collection of data used to train or evaluate a machine learning model.'},
+    {t:'Diffusion Model',d:'Generative model that learns to reverse a noise-adding process to create realistic outputs.'},
+    {t:'Dimensionality Reduction',d:'Reducing the number of features while preserving important information (PCA, t-SNE, UMAP).'},
+    {t:'Embedding',d:'A dense vector representation of data (words, images, etc.) capturing semantic meaning.'},
+    {t:'Epoch',d:'One complete pass through the entire training dataset.'},
+    {t:'F1 Score',d:'Harmonic mean of precision and recall; balanced metric for classification.'},
+    {t:'Feature Engineering',d:'Process of selecting, transforming, or creating input features to improve model performance.'},
+    {t:'Few-Shot Learning',d:'Training or prompting a model to perform well with very few examples.'},
+    {t:'Fine-Tuning',d:'Further training a pre-trained model on domain-specific data to specialize its capabilities.'},
+    {t:'Foundation Model',d:'Large model trained on broad data that can be adapted to many downstream tasks (GPT-4, Claude).'},
+    {t:'GAN',d:'Generative Adversarial Network — two competing networks (generator + discriminator) for generating realistic data.'},
+    {t:'GPT',d:'Generative Pre-trained Transformer — OpenAI\'s series of powerful language models.'},
+    {t:'Gradient',d:'Vector indicating direction and magnitude of steepest increase in loss function.'},
+    {t:'GPU',d:'Graphics Processing Unit — hardware optimized for the parallel matrix operations needed in deep learning.'},
+    {t:'Hallucination',d:'When an LLM confidently generates factually incorrect or fabricated information.'},
+    {t:'Hyperparameter',d:'Model configuration set before training (learning rate, batch size, number of layers).'},
+    {t:'Inference',d:'Using a trained model to make predictions on new data.'},
+    {t:'Label',d:'The known correct answer/output for a training example in supervised learning.'},
+    {t:'Latent Space',d:'Compressed, abstract representation space learned by models like autoencoders or GANs.'},
+    {t:'Learning Rate',d:'Controls how much to adjust model weights in response to the estimated error each update.'},
+    {t:'LLM',d:'Large Language Model — a Transformer model trained on massive text data (GPT-4, Claude, Gemini).'},
+    {t:'LoRA',d:'Low-Rank Adaptation — efficient fine-tuning that adds small trainable matrices to frozen model weights.'},
+    {t:'Loss Function',d:'Measures how wrong the model\'s predictions are; training minimizes this value.'},
+    {t:'LSTM',d:'Long Short-Term Memory — RNN variant with gates to selectively remember/forget information.'},
+    {t:'MLOps',d:'Machine Learning Operations — DevOps practices applied to ML: deployment, monitoring, retraining pipelines.'},
+    {t:'Model',d:'A mathematical function with learned parameters that maps inputs to outputs.'},
+    {t:'Multimodal AI',d:'AI that can process multiple types of data (text + images + audio) together.'},
+    {t:'NLP',d:'Natural Language Processing — AI field focused on understanding and generating human language.'},
+    {t:'Normalization',d:'Scaling input data to a standard range to improve training stability and speed.'},
+    {t:'Optimizer',d:'Algorithm updating model weights to minimize loss (SGD, Adam, AdamW).'},
+    {t:'Overfitting',d:'Model performs well on training data but poorly on unseen test data.'},
+    {t:'Parameters',d:'The learned weights inside a neural network. GPT-4 has ~1.8 trillion parameters.'},
+    {t:'Perceptron',d:'The simplest neural unit: takes inputs, applies weights, outputs via activation function.'},
+    {t:'Precision',d:'Of all positive predictions, what fraction were actually correct.'},
+    {t:'RAG',d:'Retrieval Augmented Generation — combining LLMs with a document retrieval system.'},
+    {t:'Recall',d:'Of all actual positives, what fraction were correctly identified.'},
+    {t:'Regression',d:'Predicting a continuous numerical value (price, temperature, probability).'},
+    {t:'Regularization',d:'Techniques to prevent overfitting: dropout, L1/L2 penalty, early stopping.'},
+    {t:'Reinforcement Learning',d:'Agent learns optimal behavior through trial and error with rewards and penalties.'},
+    {t:'ReLU',d:'Rectified Linear Unit — activation function f(x)=max(0,x). Most common in deep networks.'},
+    {t:'RLHF',d:'Reinforcement Learning from Human Feedback — key technique for aligning LLMs to human preferences.'},
+    {t:'Softmax',d:'Activation function converting raw scores to probabilities summing to 1 for multi-class output.'},
+    {t:'Tensor',d:'Multi-dimensional array — the fundamental data structure in deep learning frameworks.'},
+    {t:'Token',d:'The basic unit of text LLMs process. ~1 token ≈ 0.75 words in English.'},
+    {t:'Transfer Learning',d:'Reusing a model trained on one task as the starting point for a different task.'},
+    {t:'Transformer',d:'Neural network architecture using self-attention, foundation of all modern LLMs.'},
+    {t:'Underfitting',d:'Model is too simple to capture the underlying pattern; poor training and test performance.'},
+    {t:'Validation Set',d:'Data held out during training to monitor performance and tune hyperparameters.'},
+    {t:'Vanishing Gradient',d:'Problem in deep networks where gradients become extremely small, preventing learning in early layers.'},
+    {t:'Vector Database',d:'Specialized database for storing and efficiently searching high-dimensional embedding vectors.'},
+    {t:'Zero-Shot',d:'Asking a model to perform a task without any examples of that task in the prompt.'},
+  ];
+  const searchVal=S.search;
+  const filtered=searchVal?terms.filter(t=>t.t.toLowerCase().includes(searchVal)||t.d.toLowerCase().includes(searchVal)):terms;
+  el.innerHTML=`<div class="sec-head"><h2>📖 AI <span class="hl">Glossary</span></h2><div class="cnt-badge">${filtered.length} terms</div></div>
+  <div class="gloss-grid">${filtered.map(t=>`<div class="gloss-card"><div class="gt">${t.t}</div><div class="gd">${t.d}</div></div>`).join('')}</div>`;
+}
+
+// ─── QUIZ ─────────────────────────────────────────────────────
+function buildQuiz(){
+  return [
+    {q:'What is the main difference between Machine Learning and traditional programming?',opts:['ML programs are faster','ML learns patterns from data; traditional programming uses explicit rules','ML uses more memory','ML is only for images'],a:1,exp:'In traditional programming, humans write rules. In ML, the algorithm discovers rules from data.'},
+    {q:'Which type of learning uses labeled data with known correct answers?',opts:['Unsupervised Learning','Reinforcement Learning','Supervised Learning','Self-Supervised Learning'],a:2,exp:'Supervised learning trains on input-output pairs where the correct answer (label) is provided.'},
+    {q:'What does a neural network\'s "activation function" do?',opts:['Downloads data faster','Adds non-linearity so networks can learn complex patterns','Speeds up training','Reduces memory usage'],a:1,exp:'Without non-linear activations, stacked layers would just be one linear function, unable to learn complex patterns.'},
+    {q:'What is "overfitting" in machine learning?',opts:['Model trains too slowly','Model uses too much GPU memory','Model performs great on training data but poorly on new data','Model cannot learn at all'],a:2,exp:'Overfitting = memorizing training data including noise, losing ability to generalize to unseen examples.'},
+    {q:'What does the "T" stand for in GPT?',opts:['Training','Transfer','Transformer','Text'],a:2,exp:'GPT = Generative Pre-trained Transformer. The Transformer architecture (2017) is what makes modern LLMs possible.'},
+    {q:'Which framework is most popular for AI/deep learning research?',opts:['TensorFlow','PyTorch','Scikit-learn','Keras'],a:1,exp:'PyTorch dominates AI research due to its dynamic computation graph, Pythonic design, and large community.'},
+    {q:'What is "gradient descent"?',opts:['A way to download AI models','An optimization algorithm that minimizes the loss function by adjusting weights','A type of neural network','A data preprocessing step'],a:1,exp:'Gradient descent follows the negative gradient of the loss function to find model parameters that minimize error.'},
+    {q:'What does RAG stand for in AI?',opts:['Random Access Generation','Retrieval Augmented Generation','Recursive Auto-encoding Graph','Residual Attention Gate'],a:1,exp:'RAG retrieves relevant documents and passes them as context to an LLM, grounding its responses in real data.'},
+    {q:'What is a "token" in the context of LLMs?',opts:['A security credential','A small piece of text (roughly 0.75 words) that LLMs process','A type of neural network layer','A GPU memory unit'],a:1,exp:'LLMs don\'t process words directly. They use tokenizers to split text into tokens (subword units). ~1 token ≈ 0.75 words.'},
+    {q:'What does CNN stand for and what is it primarily used for?',opts:['Contextual Neural Network — for text','Convolutional Neural Network — primarily for images','Connected Neural Network — for graphs','Cyclical Neural Network — for time series'],a:1,exp:'CNNs use convolutional filters to detect spatial features like edges and shapes, making them excellent for images.'},
+    {q:'What is the purpose of "dropout" in neural networks?',opts:['Speed up inference','Compress model size','Prevent overfitting by randomly disabling neurons during training','Improve accuracy on test data always'],a:2,exp:'Dropout randomly zeros out neurons during training, preventing co-adaptation and forcing robust feature learning.'},
+    {q:'What is "hallucination" in LLMs?',opts:['Artistic image generation','When the model generates confident but factually incorrect information','When the model refuses to answer','A type of attention pattern'],a:1,exp:'LLMs can generate plausible-sounding but false information. Mitigation: RAG, grounding prompts, verification.'},
+    {q:'What is RLHF used for?',opts:['Faster inference','Training robots to walk','Aligning LLMs with human preferences using human feedback as reward signal','Compressing model weights'],a:2,exp:'RLHF (Reinforcement Learning from Human Feedback) is key to making LLMs like ChatGPT, Claude safe and helpful.'},
+    {q:'What is the "context window" of an LLM?',opts:['The GUI window for running models','Maximum amount of text (tokens) the model can process at once','The model\'s training data size','The number of model parameters'],a:1,exp:'Context window limits how much text the model can "see" at once. Longer context = more expensive but can handle more input.'},
+    {q:'What does "transfer learning" mean?',opts:['Moving models between GPUs','Using a pre-trained model as starting point and adapting it to a new task','Transferring data between databases','A type of optimization algorithm'],a:1,exp:'Transfer learning reuses knowledge from a pre-trained model (e.g., ResNet trained on ImageNet) for a new task with less data and compute.'},
+  ];
+}
+
+function renderQuiz(){
+  if(!quizBank.length){quizBank=buildQuiz();quizIdx=0;quizScore=0;quizTotal=0;}
+  const el=document.getElementById('content');
+  const q=quizBank[quizIdx%quizBank.length];
+  const pct=quizTotal>0?Math.round(quizScore/quizTotal*100):0;
+  el.innerHTML=`<div class="sec-head"><h2>🧠 AI <span class="hl">Quiz</span></h2><div class="cnt-badge">Score: ${quizScore}/${quizTotal}</div></div>
+  <div class="quiz-wrap">
+    <div class="q-score-bar"><div class="q-score-fill" style="width:${pct}%"></div></div>
+    <div class="q-text">Q${quizIdx+1}. ${q.q}</div>
+    <div class="q-opts">
+      ${q.opts.map((o,i)=>`<div class="q-opt" onclick="answerQ(${i},${q.a},this)" id="qo${i}">
+        <span class="q-letter">${'ABCD'[i]}</span>${o}</div>`).join('')}
+    </div>
+    <div class="q-foot">
+      <div class="q-exp" id="qexp"></div>
+      <button class="q-next" id="qnext" onclick="nextQ()">Next Question →</button>
+    </div>
+  </div>`;
+}
+
+function answerQ(chosen,correct,el){
+  document.querySelectorAll('.q-opt').forEach(o=>o.style.pointerEvents='none');
+  quizTotal++;
+  const exp=document.getElementById('qexp');
+  if(chosen===correct){el.classList.add('correct');quizScore++;exp.innerHTML=`<span style="color:var(--green)">✓ Correct!</span> ${quizBank[quizIdx%quizBank.length].exp}`;}
+  else{el.classList.add('wrong');document.getElementById('qo'+correct).classList.add('correct');exp.innerHTML=`<span style="color:var(--red)">✗ Wrong.</span> ${quizBank[quizIdx%quizBank.length].exp}`;}
+  document.getElementById('qnext').style.display='block';
+  document.querySelector('.cnt-badge').textContent=`Score: ${quizScore}/${quizTotal}`;
+}
+
+function nextQ(){quizIdx++;if(quizIdx>=quizBank.length){quizIdx=0;quizBank=buildQuiz();}renderQuiz();}
+
+// ─── TERMINAL PLAYGROUND ─────────────────────────────────────
+function renderTerminal(){
+  const el=document.getElementById('content');
+  el.innerHTML=`<div class="sec-head"><h2>💻 Python AI <span class="hl">Playground</span></h2><div class="cnt-badge">Simulated</div></div>
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="dots"><div class="dot2" style="background:#ef4444"></div><div class="dot2" style="background:#f59e0b"></div><div class="dot2" style="background:#10b981"></div></div>
+      <span style="font-family:JetBrains Mono;font-size:.72rem;color:var(--muted)">python3 — AI Playground Simulator</span>
+      <button onclick="clearTerm()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.72rem">clear</button>
+    </div>
+    <div class="term-body" id="tbody">
+      <div class="tl"><span class="th">🧠 AI Mastery Python Playground v1.0</span></div>
+      <div class="tl"><span class="to">Type Python AI commands. Try: help(), import numpy, import sklearn</span></div>
+      <div class="tl"></div>
+    </div>
+    <div class="term-in-row">
+      <span class="pr">>>> </span>
+      <input class="term-in" id="tin" placeholder="type python code..." onkeydown="termKey(event)" autofocus/>
+    </div>
+  </div>
+  <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:14px">
+    <div style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);margin-bottom:10px">Quick Examples</div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px">
+      ${['help()','import numpy as np','import sklearn','import torch','model = "GPT-4"','print("Hello AI!")','2**10','[x**2 for x in range(5)]','{"model":"gpt-4","tokens":128000}','import tensorflow as tf'].map(c=>`
+        <span onclick="runTerm('${c.replace(/'/g,"\\'")}','${c.replace(/'/g,"\\'")}')" style="font-family:JetBrains Mono;font-size:.72rem;padding:4px 10px;background:var(--panel2);border:1px solid var(--border);border-radius:5px;cursor:pointer;color:#a5b4fc;transition:all .2s" onmouseover="this.style.borderColor='#c084fc'" onmouseout="this.style.borderColor='var(--border)'">${c}</span>`).join('')}
+    </div>
+  </div>`;
+}
+
+function termKey(e){
+  const inp=document.getElementById('tin');
+  if(e.key==='Enter'){runTerm(inp.value.trim(),inp.value.trim());inp.value='';termHistIdx=-1;}
+  else if(e.key==='ArrowUp'){termHistIdx=Math.min(termHistIdx+1,termHist.length-1);if(termHist[termHistIdx])inp.value=termHist[termHistIdx];}
+  else if(e.key==='ArrowDown'){termHistIdx=Math.max(termHistIdx-1,0);inp.value=termHist[termHistIdx]||'';}
+}
+
+function runTerm(display,cmd){
+  if(!cmd)return;
+  termHist.unshift(cmd);
+  addTL(`<span class="pr">>>> </span><span class="ct">${display}</span>`);
+  simPython(cmd).forEach(l=>addTL(l));
+  addTL('');
+}
+
+function addTL(html){
+  const b=document.getElementById('tbody');if(!b)return;
+  const d=document.createElement('div');d.className='tl';d.innerHTML=html;
+  b.appendChild(d);b.scrollTop=b.scrollHeight;
+}
+
+function clearTerm(){const b=document.getElementById('tbody');if(b)b.innerHTML='';}
+
+function simPython(cmd){
+  const c=cmd.trim();
+  const m={
+    'help()': [`<span class="to">Available AI modules (simulated):</span>`,`<span class="to">  numpy, pandas, sklearn, torch, tensorflow, transformers</span>`,`<span class="to">  langchain, openai, diffusers, gym, matplotlib</span>`,`<span class="to">Type any import to see module info!</span>`],
+    'import numpy as np': [`<span class="to">✓ NumPy 1.26.3 loaded — n-dimensional array library</span>`,`<span class="to">  np.array(), np.zeros(), np.dot(), np.linalg.eig()</span>`],
+    'import sklearn': [`<span class="to">✓ Scikit-Learn 1.4.0 loaded — classical ML toolkit</span>`,`<span class="to">  LinearRegression, RandomForest, KMeans, SVM, PCA</span>`],
+    'import torch': [`<span class="to">✓ PyTorch 2.2.0+cu121 loaded (CUDA available)</span>`,`<span class="to">  torch.Tensor, nn.Module, optim.Adam, autograd</span>`],
+    'import tensorflow as tf': [`<span class="to">✓ TensorFlow 2.15.0 loaded</span>`,`<span class="to">  tf.keras.Sequential, Conv2D, Dense, LSTM</span>`],
+    'import pandas as pd': [`<span class="to">✓ Pandas 2.2.0 loaded — data manipulation library</span>`,`<span class="to">  DataFrame, read_csv(), groupby(), merge()</span>`],
+    'model = "GPT-4"': [`<span class="to">model = 'GPT-4'</span>`,`<span class="to"># OpenAI's GPT-4 — ~1.8T params, 128K context window</span>`],
+    'print("Hello AI!")': [`<span class="to">Hello AI!</span>`],
+    '2**10': [`<span class="to">1024</span>`],
+    '[x**2 for x in range(5)]': [`<span class="to">[0, 1, 4, 9, 16]</span>`],
+    '{"model":"gpt-4","tokens":128000}': [`<span class="to">{'model': 'gpt-4', 'tokens': 128000}</span>`],
+    'import matplotlib.pyplot as plt': [`<span class="to">✓ Matplotlib 3.8.2 loaded — plotting library</span>`,`<span class="to">  plt.plot(), plt.scatter(), plt.imshow(), plt.show()</span>`],
+    'from transformers import pipeline': [`<span class="to">✓ HuggingFace Transformers 4.38.0 loaded</span>`,`<span class="to">  pipeline('sentiment-analysis'), AutoModel, AutoTokenizer</span>`],
+  };
+  if(m[c])return m[c];
+  if(c.startsWith('print('))return[`<span class="to">${c.slice(6,-1).replace(/["']/g,'')}</span>`];
+  if(c.startsWith('import langchain'))return[`<span class="to">✓ LangChain 0.1.9 loaded</span>`,`<span class="to">  ChatOpenAI, RetrievalQA, ConversationalChain, Agents</span>`];
+  if(c.startsWith('import openai'))return[`<span class="to">✓ OpenAI SDK 1.12.0 loaded</span>`,`<span class="to">  OpenAI(), chat.completions.create(), embeddings.create()</span>`];
+  if(/^\d+[\+\-\*\/]\d+$/.test(c))return[`<span class="to">${eval(c)}</span>`];
+  if(c==='')return[];
+  return[`<span class="te">NameError: '${c}' — not found in simulation.</span>`,`<span class="to">Try: help(), import numpy as np, import torch</span>`];
+}
+
+// ─── MODAL ───────────────────────────────────────────────────
+function openModal(t){
+  const d=t.detail;
+  const cat=DB.categories.find(c=>c.id===t.cat);
+  document.getElementById('modal-title').innerHTML=`${cat?.icon||'🤖'} ${t.name} <span class="diff d-${t.level}" style="font-size:.68rem">${t.level}</span>`;
+  let h=`<p class="big-desc">${d.full}</p>`;
+  if(d.analogy)h+=`<div class="analogy-box">💡 <div><strong>Analogy:</strong> ${d.analogy}</div></div>`;
+  h+=`<h4>📟 Code Examples</h4><div class="m-code">${d.examples.map(e=>`<span class="${e.type}">${e.code}</span>`).join('')}</div>`;
+  if(d.tip)h+=`<div class="tip-box">🔥 <div><strong>Pro Tip:</strong> ${d.tip}</div></div>`;
+  h+=`<div class="m-actions">
+    <button class="m-btn m-btn-green" onclick="markLearned('${t.id}')" id="lb-${t.id}">${S.learned.has(t.id)?'✓ Marked as Learned':'+ Mark as Learned'}</button>
+    <button class="m-btn m-btn-purple" onclick="copySnip(event,'${t.snippet.replace(/'/g,"\\'")}')">📋 Copy Snippet</button>
+  </div>`;
+  document.getElementById('modal-body').innerHTML=h;
+  document.getElementById('modal').classList.add('open');
+}
+
+function markLearned(id){
+  S.learned.has(id)?S.learned.delete(id):S.learned.add(id);
+  const btn=document.getElementById('lb-'+id);
+  if(btn)btn.innerHTML=S.learned.has(id)?'✓ Marked as Learned':'+ Mark as Learned';
+  renderProg();renderCats();
+  if(S.view==='topics')renderTopics();
+}
+function closeModalOv(e){if(e.target.id==='modal')closeModal();}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+
+// ─── CONTROLS ────────────────────────────────────────────────
+function setLevel(l){
+  S.level=l;S.view='topics';
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  renderContent();
+}
+function setView(v){
+  S.view=v;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  if(v==='quiz')quizBank=[];
+  renderContent();
+}
+function setCat(c){
+  S.cat=c;S.view='topics';
+  renderCats();renderContent();
+}
+function filterContent(){
+  S.search=document.getElementById('search').value.toLowerCase();
+  S.view='topics';renderContent();
+}
+function copySnip(e,text){
+  e.stopPropagation();
+  navigator.clipboard.writeText(text).catch(()=>{});
+  const n=document.getElementById('notif');
+  n.classList.add('show');setTimeout(()=>n.classList.remove('show'),2000);
+}
+
+// ─── AUTHOR PROTECTION ───────────────────────────────────────
+const AUTHOR=Object.freeze({name:'Pamas',role:'Author'});
+function enforceAuthor(){
+  ['author-name','footer-author-name'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&el.textContent.trim()!==AUTHOR.name)el.textContent=AUTHOR.name;
+  });
+  ['author-badge','footer-author'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&el.getAttribute('data-author')!==AUTHOR.name)el.setAttribute('data-author',AUTHOR.name);
+  });
+}
+const authObs=new MutationObserver(()=>enforceAuthor());
+document.addEventListener('DOMContentLoaded',()=>{
+  ['author-name','footer-author-name','author-badge','footer-author'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)authObs.observe(el,{childList:true,subtree:true,characterData:true,attributes:true});
+  });
+});
+Object.defineProperty(window,'AUTHOR',{writable:false,configurable:false});
+
+// ─── START ───────────────────────────────────────────────────
+init();enforceAuthor();
+</script>
+</body>
+</html>
